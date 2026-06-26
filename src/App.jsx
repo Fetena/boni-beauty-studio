@@ -183,12 +183,12 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F]">
         <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
-          <div className="w-full flex justify-between items-center">
+          <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
             <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
             <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
           </div>
         </header>
-        <div className="w-full px-6 py-12">
+        <div className="max-w-7xl mx-auto w-full px-6 py-12">
           <h1 className="text-5xl font-serif mb-12">{data.title}</h1>
           <div className="grid md:grid-cols-3 gap-8">
             {data.items.map((item, idx) => (
@@ -208,9 +208,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
-      {}
       <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-[#FDFBF5]/80 backdrop-blur-md z-50">
-        <div className="w-full flex justify-between items-center">
+        <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
           <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
           <nav className="hidden md:flex gap-8 text-sm font-medium">
             <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
@@ -221,35 +220,32 @@ export default function App() {
         </div>
       </header>
 
-      {}
       <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-1000"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
         />
         <div className="absolute inset-0 bg-[#0A1D2F]/40" />
-        <div className="relative z-10 px-6 md:px-24 w-full text-white">
+        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-6 text-white">
           <h1 className="text-6xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
           <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
         </div>
       </section>
 
-      {}
       <section className="py-16 w-full">
-        <div className="w-full px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
             <Counter initialValue={20} label="Experts" icon={Users} />
             <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
             <Counter initialValue={10} label="Years" icon={Award} />
             <Counter initialValue={18} label="Devices" icon={ShieldCheck} />
         </div>
-        <div className="w-full px-6 mt-12 text-center text-[#0A1D2F]/60">
+        <div className="max-w-7xl mx-auto px-6 mt-12 text-center text-[#0A1D2F]/60">
             <p className="font-bold text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
             <p>Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
         </div>
       </section>
 
-      {}
-      <section ref={servicesRef} className="w-full px-6 py-24">
+      <section ref={servicesRef} className="max-w-7xl mx-auto px-6 py-24">
         <div className="text-center mb-16">
             <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Modern and safe</span>
             <h2 className="text-4xl font-serif mt-2">Our Services</h2>
@@ -269,9 +265,8 @@ export default function App() {
         </div>
       </section>
 
-      {}
       <section ref={aboutRef} className="py-24 bg-[#0A1D2F] text-[#FDFBF5] w-full">
-        <div className="w-full px-6 flex flex-col md:flex-row items-center gap-16">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
            <div className="w-full md:w-1/2">
               <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[500px] w-full object-cover" />
            </div>
@@ -283,24 +278,25 @@ export default function App() {
         </div>
       </section>
 
-      {}
       <footer ref={contactRef} className="py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10 w-full">
-         <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
-         <p className="text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
-         <div className="mt-4 text-xs font-bold uppercase tracking-widest space-y-2">
-            <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
-            <p>945792677</p>
-            <p>fita.regassa@gmail.com</p>
-            <div className="pt-4">
-              <a 
-                href="https://t.me/FitaRegassa" 
-                target="_blank" 
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
-              >
-                Message on Telegram
-              </a>
-            </div>
+         <div className="max-w-7xl mx-auto px-6">
+             <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
+             <p className="text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
+             <div className="mt-4 text-xs font-bold uppercase tracking-widest space-y-2">
+                <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
+                <p>945792677</p>
+                <p>fita.regassa@gmail.com</p>
+                <div className="pt-4">
+                  <a 
+                    href="https://t.me/FitaRegassa" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
+                  >
+                    Message on Telegram
+                  </a>
+                </div>
+             </div>
          </div>
       </footer>
       <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
