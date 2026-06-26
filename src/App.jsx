@@ -27,10 +27,10 @@ const servicesData = {
 const Counter = ({ initialValue, label, icon: Icon, suffix = "" }) => {
   const [count, setCount] = useState(initialValue);
   return (
-    <button onClick={() => setCount(prev => prev + 1)} className="flex flex-col items-center gap-2 p-4 md:p-6 rounded-2xl hover:bg-[#C8B87B]/10 transition-all w-full border border-transparent hover:border-[#C8B87B]/20">
-      <div className="text-[#C8B87B] mb-1"><Icon size={20} className="md:w-6 md:h-6" /></div>
-      <div className="text-2xl md:text-3xl font-bold text-[#0A1D2F] tracking-tight">{count}{suffix}</div>
-      <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-[#0A1D2F]/50">{label}</div>
+    <button onClick={() => setCount(prev => prev + 1)} className="flex flex-col items-center gap-2 p-6 rounded-2xl hover:bg-[#C8B87B]/10 transition-all w-full border border-transparent hover:border-[#C8B87B]/20">
+      <div className="text-[#C8B87B] mb-1"><Icon size={24} /></div>
+      <div className="text-3xl font-bold text-[#0A1D2F] tracking-tight">{count}{suffix}</div>
+      <div className="text-[10px] font-bold uppercase tracking-widest text-[#0A1D2F]/50">{label}</div>
     </button>
   );
 };
@@ -105,10 +105,10 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0A1D2F]/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#FDFBF5] w-full max-w-lg p-6 md:p-8 rounded-3xl shadow-2xl relative my-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 md:top-6 md:right-6 text-[#0A1D2F] hover:text-[#C8B87B] transition"><X /></button>
-        <h2 className="text-2xl md:text-3xl font-serif mb-6 text-[#0A1D2F]">Book Appointment</h2>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0A1D2F]/80 backdrop-blur-sm">
+      <div className="bg-[#FDFBF5] w-full max-w-lg p-8 rounded-3xl shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onClick={onClose} className="absolute top-6 right-6 text-[#0A1D2F] hover:text-[#C8B87B] transition"><X /></button>
+        <h2 className="text-3xl font-serif mb-6 text-[#0A1D2F]">Book Appointment</h2>
         
         {status === 'success' ? (
             <div className="text-center py-12 text-[#0A1D2F]">
@@ -119,36 +119,36 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
             </div>
         ) : (
             <form className="space-y-4" onSubmit={handleSubmit}>
-                <input required name="name" type="text" placeholder="Your Name" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
-                <input required name="email" type="email" placeholder="Your Email" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
+                <input required name="name" type="text" placeholder="Your Name" className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
+                <input required name="email" type="email" placeholder="Your Email" className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
                 
                 <div className="grid grid-cols-2 gap-4">
-                    <input type="date" required className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingDate(e.target.value)} />
-                    <input type="time" required className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingTime(e.target.value)} />
+                    <input type="date" required className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingDate(e.target.value)} />
+                    <input type="time" required className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingTime(e.target.value)} />
                 </div>
 
                 {status === 'full' && <p className="text-red-500 text-sm font-bold">Selected time is FULL. Please choose another.</p>}
 
                 <div className="space-y-2">
-                    <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase">Contact Preference:</label>
-                    <div className="flex gap-4 mb-4 text-sm">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" checked={contactMethod === 'email'} onChange={() => setContactMethod('email')} className="accent-[#C8B87B]" /> Email
+                    <label className="block text-sm font-bold text-[#0A1D2F]/70">Contact Preference:</label>
+                    <div className="flex gap-4 mb-4">
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <input type="radio" checked={contactMethod === 'email'} onChange={() => setContactMethod('email')} className="accent-[#C8B87B]" /> Send via Email
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" checked={contactMethod === 'telegram'} onChange={() => setContactMethod('telegram')} className="accent-[#C8B87B]" /> Telegram
+                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <input type="radio" checked={contactMethod === 'telegram'} onChange={() => setContactMethod('telegram')} className="accent-[#C8B87B]" /> Message on Telegram
                         </label>
                     </div>
 
-                    <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase">Select Services:</label>
-                    <div className="grid gap-2 border border-[#0A1D2F]/10 p-3 rounded-xl max-h-40 overflow-y-auto">
+                    <label className="block text-sm font-bold text-[#0A1D2F]/70">Select Services:</label>
+                    <div className="grid gap-2 border border-[#0A1D2F]/10 p-4 rounded-xl max-h-40 overflow-y-auto">
                     {Object.entries(services).map(([cat, data]) => (
                         <div key={cat} className="space-y-1">
-                            <div className="font-bold text-[10px] uppercase text-[#C8B87B] py-1">{cat}</div>
+                            <div className="font-bold text-xs uppercase text-[#C8B87B] py-1">{cat}</div>
                             {data.items.map(item => (
-                                <label key={item.name} className="flex items-center gap-3 cursor-pointer p-1.5 hover:bg-[#0A1D2F]/5 rounded-lg transition">
+                                <label key={item.name} className="flex items-center gap-3 cursor-pointer p-2 hover:bg-[#0A1D2F]/5 rounded-lg transition">
                                     <input type="checkbox" checked={selected.includes(item.name)} onChange={() => toggleService(item.name)} className="accent-[#C8B87B] w-4 h-4" />
-                                    <span className="text-xs font-medium">{item.name}</span>
+                                    <span className="text-sm font-medium">{item.name}</span>
                                 </label>
                             ))}
                         </div>
@@ -156,7 +156,7 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
                     </div>
                 </div>
                 
-                <textarea name="note" placeholder="Any special needs?" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="2"></textarea>
+                <textarea name="note" placeholder="Tell us about your needs..." className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="3"></textarea>
                 <button disabled={status === 'submitting'} type="submit" className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] transition disabled:opacity-50">
                     {status === 'submitting' ? "Sending..." : "Submit Request"}
                 </button>
@@ -183,13 +183,13 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F]">
         <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="w-full flex justify-between items-center">
             <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
             <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
           </div>
         </header>
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <h1 className="text-4xl md:text-5xl font-serif mb-12">{data.title}</h1>
+        <div className="w-full px-6 py-12">
+          <h1 className="text-5xl font-serif mb-12">{data.title}</h1>
           <div className="grid md:grid-cols-3 gap-8">
             {data.items.map((item, idx) => (
               <div key={idx} className="bg-white p-4 border border-[#0A1D2F]/10 shadow-sm rounded-2xl">
@@ -208,56 +208,60 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
-      <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-[#FDFBF5]/90 backdrop-blur-md z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+      {}
+      <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-[#FDFBF5]/80 backdrop-blur-md z-50">
+        <div className="w-full flex justify-between items-center">
           <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
           <nav className="hidden md:flex gap-8 text-sm font-medium">
             <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
             <button onClick={() => scrollToSection(aboutRef)} className="hover:text-[#C8B87B] transition">About</button>
             <button onClick={() => scrollToSection(contactRef)} className="hover:text-[#C8B87B] transition">Contact</button>
           </nav>
-          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-6 md:px-8 py-2 md:py-3 text-xs md:text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
+          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-8 py-3 text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
         </div>
       </header>
 
-      <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center overflow-hidden">
+      {}
+      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-1000"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
         />
         <div className="absolute inset-0 bg-[#0A1D2F]/40" />
-        <div className="relative z-10 px-6 md:px-24 text-white max-w-4xl w-full">
-          <h1 className="text-5xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
-          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-8 md:px-10 py-3 md:py-4 font-bold uppercase tracking-widest text-[10px] md:text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
+        <div className="relative z-10 px-6 md:px-24 w-full text-white">
+          <h1 className="text-6xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
+          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
         </div>
       </section>
 
-      <section className="py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+      {}
+      <section className="py-16 w-full">
+        <div className="w-full px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
             <Counter initialValue={20} label="Experts" icon={Users} />
             <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
             <Counter initialValue={10} label="Years" icon={Award} />
             <Counter initialValue={18} label="Devices" icon={ShieldCheck} />
         </div>
-        <div className="max-w-7xl mx-auto px-6 mt-8 md:mt-12 text-center text-[#0A1D2F]/60">
-            <p className="font-bold text-[10px] md:text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
-            <p className="text-sm">Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
+        <div className="w-full px-6 mt-12 text-center text-[#0A1D2F]/60">
+            <p className="font-bold text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
+            <p>Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
         </div>
       </section>
 
-      <section ref={servicesRef} className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-        <div className="text-center mb-12 md:mb-16">
-            <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Modern and safe</span>
+      {}
+      <section ref={servicesRef} className="w-full px-6 py-24">
+        <div className="text-center mb-16">
+            <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Modern and safe</span>
             <h2 className="text-4xl font-serif mt-2">Our Services</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+        <div className="grid md:grid-cols-2 gap-12">
           {Object.keys(servicesData).map(key => (
             <div key={key} className="group cursor-pointer" onClick={() => { setActiveCategory(key); setView('portfolio'); }}>
-              <div className="h-72 md:h-96 w-full rounded-3xl shadow-xl overflow-hidden relative border border-[#0A1D2F]/10">
+              <div className="h-96 w-full rounded-3xl shadow-xl overflow-hidden relative border border-[#0A1D2F]/10">
                 <img src={servicesData[key].bgImg} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1D2F]/80 to-transparent p-6 md:p-8 flex flex-col justify-end">
-                    <h3 className="text-2xl md:text-3xl font-serif text-white">{servicesData[key].title}</h3>
-                    <span className="text-[#C8B87B] font-bold text-xs md:text-sm mt-2 flex items-center gap-2 underline underline-offset-4">Learn more <ChevronRight size={16}/></span>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1D2F]/80 to-transparent p-8 flex flex-col justify-end">
+                    <h3 className="text-3xl font-serif text-white">{servicesData[key].title}</h3>
+                    <span className="text-[#C8B87B] font-bold text-sm mt-2 flex items-center gap-2 underline underline-offset-4">Learn more <ChevronRight size={16}/></span>
                 </div>
               </div>
             </div>
@@ -265,23 +269,25 @@ export default function App() {
         </div>
       </section>
 
-      <section ref={aboutRef} className="py-16 md:py-24 bg-[#0A1D2F] text-[#FDFBF5]">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
+      {}
+      <section ref={aboutRef} className="py-24 bg-[#0A1D2F] text-[#FDFBF5] w-full">
+        <div className="w-full px-6 flex flex-col md:flex-row items-center gap-16">
            <div className="w-full md:w-1/2">
-              <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[300px] md:h-[500px] w-full object-cover" />
+              <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[500px] w-full object-cover" />
            </div>
-           <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
-              <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Our Story</span>
-              <h2 className="text-3xl md:text-4xl font-serif">Dedicated to your radiance.</h2>
-              <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
+           <div className="w-full md:w-1/2 space-y-6">
+              <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Our Story</span>
+              <h2 className="text-4xl font-serif">Dedicated to your radiance.</h2>
+              <p className="text-[#FDFBF5]/70 leading-relaxed text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
            </div>
         </div>
       </section>
 
-      <footer ref={contactRef} className="py-16 md:py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10">
+      {}
+      <footer ref={contactRef} className="py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10 w-full">
          <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
-         <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
-         <div className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest space-y-2">
+         <p className="text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
+         <div className="mt-4 text-xs font-bold uppercase tracking-widest space-y-2">
             <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
             <p>945792677</p>
             <p>fita.regassa@gmail.com</p>
