@@ -39,28 +39,16 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const [selected, setSelected] = useState(selectedService ? [selectedService] : []);
   const [bookingDate, setBookingDate] = useState('');
   const [bookingTime, setBookingTime] = useState('');
-  const [contactMethod, setContactMethod] = useState('email'); 
   const [status, setStatus] = useState(null); 
   const telegramHandle = "FitaRegassa"; 
 
   if (!isOpen) return null;
 
-  const toggleService = (serviceName) => {
-    setSelected(prev => 
-      prev.includes(serviceName) ? prev.filter(s => s !== serviceName) : [...prev, serviceName]
-    );
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (contactMethod === 'telegram') {
-        const msg = `Booking Request for Boni Beauty Studio\n\nName: ${e.target.name.value}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${e.target.note.value}`;
-        window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
-        onClose();
-        return;
-    }
-    setStatus("submitting");
-    setTimeout(() => setStatus("success"), 1000);
+    const msg = `Booking Request for Boni Beauty Studio\n\nName: ${e.target.name.value}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${e.target.note.value}`;
+    window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
+    onClose();
   };
 
   return (
@@ -68,23 +56,28 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
       <div className="bg-[#FDFBF5] w-full max-w-md p-6 rounded-3xl shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <button onClick={onClose} className="absolute top-6 right-6 text-[#0A1D2F] hover:text-[#C8B87B] transition"><X /></button>
         <h2 className="text-3xl font-serif mb-6 text-[#0A1D2F]">Book Appointment</h2>
-        {status === 'success' ? (
-            <div className="text-center py-12 text-[#0A1D2F]"><div className="text-5xl mb-4">✅</div><h3 className="text-2xl font-bold">Request Sent!</h3><p>We will contact you shortly.</p></div>
-        ) : (
-            <form className="space-y-4" onSubmit={handleSubmit}>
-                <input required name="name" type="text" placeholder="Your Name" className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
-                <input required name="email" type="email" placeholder="Your Email" className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
-                <div className="grid grid-cols-2 gap-4">
-                    <input type="date" required className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingDate(e.target.value)} />
-                    <input type="time" required className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingTime(e.target.value)} />
-                </div>
-                <button disabled={status === 'submitting'} type="submit" className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] transition">{status === 'submitting' ? "Sending..." : "Submit Request"}</button>
-            </form>
-        )}
+        <form className="space-y-4" onSubmit={handleSubmit}>
+            <input required name="name" type="text" placeholder="Your Name" className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
+            <input required name="email" type="email" placeholder="Your Email" className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
+            <div className="grid grid-cols-2 gap-4">
+                <input type="date" required className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingDate(e.target.value)} />
+                <input type="time" required className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingTime(e.target.value)} />
+            </div>
+            <textarea name="note" placeholder="Notes..." className="w-full p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="2"></textarea>
+            <button type="submit" className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] transition">Submit Request</button>
+        </form>
       </div>
     </div>
   );
 };
+
+const PageWrapper = ({ children }) => (
+    <div className="min-h-screen bg-[#ECE9E2] p-8">
+      <div className="mx-auto w-full max-w-[1200px] overflow-hidden rounded-3xl bg-white shadow-2xl">
+        {children}
+      </div>
+    </div>
+);
 
 export default function App() {
   const [view, setView] = useState('home');
@@ -96,14 +89,6 @@ export default function App() {
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
 
-  const PageWrapper = ({ children }) => (
-    <div className="bg-[#ECE9E2] min-h-screen py-8">
-      <div className="max-w-[1280px] mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
-        {children}
-      </div>
-    </div>
-  );
-
   if (view === 'portfolio') {
     return (
       <PageWrapper>
@@ -111,7 +96,7 @@ export default function App() {
             <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
             <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B]">← Back</button>
           </header>
-          <div className="px-8 py-16 max-w-6xl mx-auto">
+          <div className="px-8 py-16 max-w-5xl mx-auto">
             <h1 className="text-4xl font-serif mb-12">{servicesData[activeCategory].title}</h1>
             <div className="grid md:grid-cols-3 gap-8">
               {servicesData[activeCategory].items.map((item, idx) => (
@@ -140,16 +125,16 @@ export default function App() {
             <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-6 py-2 text-sm font-bold rounded-full hover:bg-[#C8B87B]">Book Now</button>
         </header>
 
-        <section className="relative h-[65vh] max-h-[620px] flex items-center overflow-hidden">
+        <section className="relative h-[550px] flex items-center overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')] bg-cover bg-center" />
             <div className="absolute inset-0 bg-[#0A1D2F]/40" />
-            <div className="relative z-10 w-full px-8 max-w-6xl mx-auto text-white">
+            <div className="relative z-10 w-full px-8 max-w-5xl mx-auto text-white">
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif leading-tight mb-8">Timeless Beauty.<br/>Artfully Defined.</h1>
                 <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-8 py-3 font-bold uppercase tracking-widest text-xs hover:bg-white transition rounded-full shadow-lg">Book a Consultation</button>
             </div>
         </section>
 
-        <section className="py-16 w-full max-w-6xl mx-auto px-8">
+        <section className="py-16 w-full max-w-5xl mx-auto px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <Counter initialValue={20} label="Experts" icon={Users} />
                 <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
@@ -158,7 +143,7 @@ export default function App() {
             </div>
         </section>
 
-        <section ref={servicesRef} className="px-8 py-16 max-w-6xl mx-auto">
+        <section ref={servicesRef} className="px-8 py-16 max-w-5xl mx-auto">
             <h2 className="text-4xl font-serif text-center mb-12">Our Services</h2>
             <div className="grid md:grid-cols-2 gap-8">
             {Object.keys(servicesData).map(key => (
@@ -175,7 +160,7 @@ export default function App() {
         </section>
 
         <section ref={aboutRef} className="py-16 bg-[#0A1D2F] text-[#FDFBF5] w-full">
-            <div className="px-8 flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto">
+            <div className="px-8 flex flex-col md:flex-row items-center gap-10 max-w-5xl mx-auto">
                 <div className="w-full md:w-1/2">
                     <img src="image_56313c.jpg" alt="Our Story" className="rounded-3xl shadow-2xl h-[400px] w-full object-cover" />
                 </div>
@@ -186,7 +171,7 @@ export default function App() {
             </div>
         </section>
 
-        <footer ref={contactRef} className="py-14 text-center border-t border-[#0A1D2F]/10 w-full max-w-6xl mx-auto">
+        <footer ref={contactRef} className="py-14 text-center border-t border-[#0A1D2F]/10 w-full max-w-5xl mx-auto">
             <p className="font-serif text-xl font-bold">BONI BEAUTY STUDIO</p>
             <p className="text-sm mt-2 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
         </footer>
