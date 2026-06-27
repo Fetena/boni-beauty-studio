@@ -41,7 +41,6 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const [bookingTime, setBookingTime] = useState('');
   const [contactMethod, setContactMethod] = useState('email'); 
   const [status, setStatus] = useState(null); 
-
   const telegramHandle = "FitaRegassa"; 
 
   if (!isOpen) return null;
@@ -179,127 +178,130 @@ export default function App() {
   const scrollToSection = (ref) => ref.current?.scrollIntoView({ behavior: 'smooth' });
 
   if (view === 'portfolio') {
-    const data = servicesData[activeCategory];
     return (
-      <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F]">
-        <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
-          <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
-            <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
+      <div className="min-h-screen bg-[#E5E5E5] py-0 md:py-8">
+        <div className="mx-auto max-w-7xl bg-white shadow-2xl min-h-screen">
+          <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
+            <div className="flex justify-between items-center">
+              <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
+              <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
+            </div>
+          </header>
+          <div className="px-6 py-12">
+            <h1 className="text-5xl font-serif mb-12">{servicesData[activeCategory].title}</h1>
+            <div className="grid md:grid-cols-3 gap-8">
+              {servicesData[activeCategory].items.map((item, idx) => (
+                <div key={idx} className="bg-white p-4 border border-[#0A1D2F]/10 shadow-sm rounded-2xl">
+                  <img src={item.img} alt={item.name} className="w-full h-64 object-cover mb-4 rounded-xl" />
+                  <h3 className="font-bold text-lg mb-1">{item.name}</h3>
+                  <p className="text-sm text-[#0A1D2F]/60 mb-4">{item.desc}</p>
+                  <button onClick={() => { setSelectedService(item.name); setIsBookingOpen(true); }} className="w-full py-3 border border-[#0A1D2F] hover:bg-[#0A1D2F] hover:text-white transition rounded-xl font-bold text-sm">Book Service</button>
+                </div>
+              ))}
+            </div>
           </div>
-        </header>
-        <div className="max-w-7xl mx-auto w-full px-6 py-12">
-          <h1 className="text-5xl font-serif mb-12">{data.title}</h1>
-          <div className="grid md:grid-cols-3 gap-8">
-            {data.items.map((item, idx) => (
-              <div key={idx} className="bg-white p-4 border border-[#0A1D2F]/10 shadow-sm rounded-2xl">
-                <img src={item.img} alt={item.name} className="w-full h-64 object-cover mb-4 rounded-xl" />
-                <h3 className="font-bold text-lg mb-1">{item.name}</h3>
-                <p className="text-sm text-[#0A1D2F]/60 mb-4">{item.desc}</p>
-                <button onClick={() => { setSelectedService(item.name); setIsBookingOpen(true); }} className="w-full py-3 border border-[#0A1D2F] hover:bg-[#0A1D2F] hover:text-white transition rounded-xl font-bold text-sm">Book Service</button>
-              </div>
-            ))}
-          </div>
+          <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
         </div>
-        <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
-      <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-[#FDFBF5]/80 backdrop-blur-md z-50">
-        <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-          <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
-          <nav className="hidden md:flex gap-8 text-sm font-medium">
-            <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
-            <button onClick={() => scrollToSection(aboutRef)} className="hover:text-[#C8B87B] transition">About</button>
-            <button onClick={() => scrollToSection(contactRef)} className="hover:text-[#C8B87B] transition">Contact</button>
-          </nav>
-          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-8 py-3 text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
-        </div>
-      </header>
-
-      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
-        <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-1000"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
-        />
-        <div className="absolute inset-0 bg-[#0A1D2F]/40" />
-        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 md:px-6 text-white">
-          <h1 className="text-6xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
-          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
-        </div>
-      </section>
-
-      <section className="py-16 w-full">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-            <Counter initialValue={20} label="Experts" icon={Users} />
-            <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
-            <Counter initialValue={10} label="Years" icon={Award} />
-            <Counter initialValue={18} label="Devices" icon={ShieldCheck} />
-        </div>
-        <div className="max-w-7xl mx-auto px-6 mt-12 text-center text-[#0A1D2F]/60">
-            <p className="font-bold text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
-            <p>Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
-        </div>
-      </section>
-
-      <section ref={servicesRef} className="max-w-7xl mx-auto px-6 py-24">
-        <div className="text-center mb-16">
-            <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Modern and safe</span>
-            <h2 className="text-4xl font-serif mt-2">Our Services</h2>
-        </div>
-        <div className="grid md:grid-cols-2 gap-12">
-          {Object.keys(servicesData).map(key => (
-            <div key={key} className="group cursor-pointer" onClick={() => { setActiveCategory(key); setView('portfolio'); }}>
-              <div className="h-96 w-full rounded-3xl shadow-xl overflow-hidden relative border border-[#0A1D2F]/10">
-                <img src={servicesData[key].bgImg} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1D2F]/80 to-transparent p-8 flex flex-col justify-end">
-                    <h3 className="text-3xl font-serif text-white">{servicesData[key].title}</h3>
-                    <span className="text-[#C8B87B] font-bold text-sm mt-2 flex items-center gap-2 underline underline-offset-4">Learn more <ChevronRight size={16}/></span>
-                </div>
-              </div>
+    <div className="min-h-screen bg-[#E5E5E5] py-0 md:py-8">
+      <div className="mx-auto max-w-7xl shadow-2xl bg-white min-h-screen">
+        <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-white/90 backdrop-blur-md z-50">
+            <div className="flex justify-between items-center">
+            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
+            <nav className="hidden md:flex gap-8 text-sm font-medium">
+                <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
+                <button onClick={() => scrollToSection(aboutRef)} className="hover:text-[#C8B87B] transition">About</button>
+                <button onClick={() => scrollToSection(contactRef)} className="hover:text-[#C8B87B] transition">Contact</button>
+            </nav>
+            <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-8 py-3 text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
             </div>
-          ))}
-        </div>
-      </section>
+        </header>
 
-      <section ref={aboutRef} className="py-24 bg-[#0A1D2F] text-[#FDFBF5] w-full">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
-           <div className="w-full md:w-1/2">
-              <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[500px] w-full object-cover" />
-           </div>
-           <div className="w-full md:w-1/2 space-y-6">
-              <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Our Story</span>
-              <h2 className="text-4xl font-serif">Dedicated to your radiance.</h2>
-              <p className="text-[#FDFBF5]/70 leading-relaxed text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
-           </div>
-        </div>
-      </section>
+        <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
+            <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-1000"
+            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
+            />
+            <div className="absolute inset-0 bg-[#0A1D2F]/40" />
+            <div className="relative z-10 w-full px-6 md:px-12 text-white">
+            <h1 className="text-6xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
+            <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
+            </div>
+        </section>
 
-      <footer ref={contactRef} className="py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10 w-full">
-         <div className="max-w-7xl mx-auto px-6">
-             <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
-             <p className="text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
-             <div className="mt-4 text-xs font-bold uppercase tracking-widest space-y-2">
-                <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
-                <p>945792677</p>
-                <p>fita.regassa@gmail.com</p>
-                <div className="pt-4">
-                  <a 
-                    href="https://t.me/FitaRegassa" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
-                  >
-                    Message on Telegram
-                  </a>
+        <section className="py-16 w-full">
+            <div className="px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+                <Counter initialValue={20} label="Experts" icon={Users} />
+                <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
+                <Counter initialValue={10} label="Years" icon={Award} />
+                <Counter initialValue={18} label="Devices" icon={ShieldCheck} />
+            </div>
+            <div className="px-6 mt-12 text-center text-[#0A1D2F]/60">
+                <p className="font-bold text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
+                <p>Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
+            </div>
+        </section>
+
+        <section ref={servicesRef} className="px-6 py-24">
+            <div className="text-center mb-16">
+                <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Modern and safe</span>
+                <h2 className="text-4xl font-serif mt-2">Our Services</h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-12">
+            {Object.keys(servicesData).map(key => (
+                <div key={key} className="group cursor-pointer" onClick={() => { setActiveCategory(key); setView('portfolio'); }}>
+                <div className="h-96 w-full rounded-3xl shadow-xl overflow-hidden relative border border-[#0A1D2F]/10">
+                    <img src={servicesData[key].bgImg} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1D2F]/80 to-transparent p-8 flex flex-col justify-end">
+                        <h3 className="text-3xl font-serif text-white">{servicesData[key].title}</h3>
+                        <span className="text-[#C8B87B] font-bold text-sm mt-2 flex items-center gap-2 underline underline-offset-4">Learn more <ChevronRight size={16}/></span>
+                    </div>
                 </div>
-             </div>
-         </div>
-      </footer>
-      <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
+                </div>
+            ))}
+            </div>
+        </section>
+
+        <section ref={aboutRef} className="py-24 bg-[#0A1D2F] text-[#FDFBF5] w-full">
+            <div className="px-6 flex flex-col md:flex-row items-center gap-16">
+            <div className="w-full md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[500px] w-full object-cover" />
+            </div>
+            <div className="w-full md:w-1/2 space-y-6">
+                <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Our Story</span>
+                <h2 className="text-4xl font-serif">Dedicated to your radiance.</h2>
+                <p className="text-[#FDFBF5]/70 leading-relaxed text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
+            </div>
+            </div>
+        </section>
+
+        <footer ref={contactRef} className="py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10 w-full">
+            <div className="px-6">
+                <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
+                <p className="text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
+                <div className="mt-4 text-xs font-bold uppercase tracking-widest space-y-2">
+                    <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
+                    <p>945792677</p>
+                    <p>fita.regassa@gmail.com</p>
+                    <div className="pt-4">
+                    <a 
+                        href="https://t.me/FitaRegassa" 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
+                    >
+                        Message on Telegram
+                    </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
+      </div>
     </div>
   );
 }
