@@ -208,17 +208,172 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
-      <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-[#FDFBF5]/90 backdrop-blur-md z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
-          <nav className="hidden md:flex gap-8 text-sm font-medium">
-            <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
-            <button onClick={() => scrollToSection(aboutRef)} className="hover:text-[#C8B87B] transition">About</button>
-            <button onClick={() => scrollToSection(contactRef)} className="hover:text-[#C8B87B] transition">Contact</button>
-          </nav>
-          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-6 md:px-8 py-2 md:py-3 text-xs md:text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
+      <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-6 py-4">
+  <div className="max-w-6xl mx-auto flex items-center justify-between">
+
+
+    {/* LOGO */}
+    <div
+      className="text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
+      onClick={() => window.scrollTo({top:0, behavior:'smooth'})}
+    >
+      BONI
+    </div>
+
+
+
+    {/* FLOATING MENU */}
+    <nav className="
+      hidden md:flex
+      items-center
+      gap-1
+      bg-white
+      border
+      border-[#0A1D2F]/10
+      rounded-full
+      px-3
+      py-2
+      shadow-md
+    ">
+
+
+      {/* SERVICES DROPDOWN */}
+      <div className="relative group">
+
+        <button
+          className="
+          px-5
+          py-2
+          text-sm
+          font-medium
+          rounded-full
+          hover:bg-[#0A1D2F]
+          hover:text-white
+          transition
+          "
+        >
+          Services ▾
+        </button>
+
+
+        <div
+          className="
+          absolute
+          top-full
+          left-0
+          mt-3
+          w-56
+          bg-white
+          rounded-2xl
+          shadow-xl
+          border
+          border-[#0A1D2F]/10
+          opacity-0
+          invisible
+          group-hover:opacity-100
+          group-hover:visible
+          translate-y-3
+          group-hover:translate-y-0
+          transition-all
+          duration-300
+          overflow-hidden
+          "
+        >
+
+          {Object.keys(servicesData).map(service => (
+
+            <button
+              key={service}
+              onClick={()=>{
+                setActiveCategory(service);
+                setView("portfolio");
+              }}
+              className="
+              block
+              w-full
+              text-left
+              px-5
+              py-3
+              text-sm
+              hover:bg-[#C8B87B]/20
+              transition
+              "
+            >
+              {service}
+            </button>
+
+          ))}
+
+
         </div>
-      </header>
+
+      </div>
+
+
+
+
+      <button
+        onClick={()=>scrollToSection(aboutRef)}
+        className="
+        px-5 py-2
+        text-sm
+        rounded-full
+        hover:bg-[#0A1D2F]
+        hover:text-white
+        transition
+        "
+      >
+        About
+      </button>
+
+
+
+      <button
+        onClick={()=>scrollToSection(contactRef)}
+        className="
+        px-5 py-2
+        text-sm
+        rounded-full
+        hover:bg-[#0A1D2F]
+        hover:text-white
+        transition
+        "
+      >
+        Contact
+      </button>
+
+
+    </nav>
+
+
+
+
+    {/* BOOK BUTTON */}
+    <button
+      onClick={()=>{
+        setSelectedService(null);
+        setIsBookingOpen(true);
+      }}
+      className="
+      bg-[#0A1D2F]
+      text-white
+      px-7
+      py-3
+      rounded-full
+      text-sm
+      font-bold
+      hover:bg-[#C8B87B]
+      hover:text-[#0A1D2F]
+      transition
+      shadow-lg
+      "
+    >
+      Book Now
+    </button>
+
+
+  </div>
+</header>
 
       <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center overflow-hidden">
         <div 
