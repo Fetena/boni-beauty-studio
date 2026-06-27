@@ -177,17 +177,25 @@ export default function App() {
   const contactRef = useRef(null);
   const scrollToSection = (ref) => ref.current?.scrollIntoView({ behavior: 'smooth' });
 
+  // Page wrapper ensures everything stays within a 7xl max-width box
+  const PageWrapper = ({ children }) => (
+    <div className="min-h-screen bg-[#E5E5E5] py-0 md:py-8">
+      <div className="mx-auto max-w-7xl bg-white shadow-2xl min-h-screen">
+        {children}
+      </div>
+    </div>
+  );
+
   if (view === 'portfolio') {
     return (
-      <div className="min-h-screen bg-[#E5E5E5] py-0 md:py-8">
-        <div className="mx-auto max-w-7xl bg-white shadow-2xl min-h-screen">
+      <PageWrapper>
           <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
-            <div className="flex justify-between items-center">
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
               <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
               <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
             </div>
           </header>
-          <div className="px-6 py-12">
+          <div className="px-6 py-12 max-w-7xl mx-auto">
             <h1 className="text-5xl font-serif mb-12">{servicesData[activeCategory].title}</h1>
             <div className="grid md:grid-cols-3 gap-8">
               {servicesData[activeCategory].items.map((item, idx) => (
@@ -201,23 +209,21 @@ export default function App() {
             </div>
           </div>
           <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
-        </div>
-      </div>
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#E5E5E5] py-0 md:py-8">
-      <div className="mx-auto max-w-7xl shadow-2xl bg-white min-h-screen">
-        <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-white/90 backdrop-blur-md z-50">
-            <div className="flex justify-between items-center">
-            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
-            <nav className="hidden md:flex gap-8 text-sm font-medium">
-                <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
-                <button onClick={() => scrollToSection(aboutRef)} className="hover:text-[#C8B87B] transition">About</button>
-                <button onClick={() => scrollToSection(contactRef)} className="hover:text-[#C8B87B] transition">Contact</button>
-            </nav>
-            <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-8 py-3 text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
+    <PageWrapper>
+        <header className="px-6 py-6 border-b border-[#0A1D2F]/10 sticky top-0 bg-white/95 backdrop-blur-md z-50">
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
+                <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>BONI</div>
+                <nav className="hidden md:flex gap-8 text-sm font-medium">
+                    <button onClick={() => scrollToSection(servicesRef)} className="hover:text-[#C8B87B] transition">Services</button>
+                    <button onClick={() => scrollToSection(aboutRef)} className="hover:text-[#C8B87B] transition">About</button>
+                    <button onClick={() => scrollToSection(contactRef)} className="hover:text-[#C8B87B] transition">Contact</button>
+                </nav>
+                <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#0A1D2F] text-white px-8 py-3 text-sm font-bold flex items-center gap-2 hover:bg-[#C8B87B] transition rounded-full">Book Now</button>
             </div>
         </header>
 
@@ -227,13 +233,13 @@ export default function App() {
             style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
             />
             <div className="absolute inset-0 bg-[#0A1D2F]/40" />
-            <div className="relative z-10 w-full px-6 md:px-12 text-white">
+            <div className="relative z-10 w-full px-6 md:px-12 max-w-7xl mx-auto text-white">
             <h1 className="text-6xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
             <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
             </div>
         </section>
 
-        <section className="py-16 w-full">
+        <section className="py-16 w-full max-w-7xl mx-auto">
             <div className="px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
                 <Counter initialValue={20} label="Experts" icon={Users} />
                 <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
@@ -246,7 +252,7 @@ export default function App() {
             </div>
         </section>
 
-        <section ref={servicesRef} className="px-6 py-24">
+        <section ref={servicesRef} className="px-6 py-24 max-w-7xl mx-auto">
             <div className="text-center mb-16">
                 <span className="text-[#C8B87B] font-bold tracking-widest text-xs uppercase">Modern and safe</span>
                 <h2 className="text-4xl font-serif mt-2">Our Services</h2>
@@ -267,7 +273,7 @@ export default function App() {
         </section>
 
         <section ref={aboutRef} className="py-24 bg-[#0A1D2F] text-[#FDFBF5] w-full">
-            <div className="px-6 flex flex-col md:flex-row items-center gap-16">
+            <div className="px-6 flex flex-col md:flex-row items-center gap-16 max-w-7xl mx-auto">
             <div className="w-full md:w-1/2">
                 <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[500px] w-full object-cover" />
             </div>
@@ -280,7 +286,7 @@ export default function App() {
         </section>
 
         <footer ref={contactRef} className="py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10 w-full">
-            <div className="px-6">
+            <div className="px-6 max-w-7xl mx-auto">
                 <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
                 <p className="text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
                 <div className="mt-4 text-xs font-bold uppercase tracking-widest space-y-2">
@@ -301,7 +307,6 @@ export default function App() {
             </div>
         </footer>
         <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
-      </div>
-    </div>
+    </PageWrapper>
   );
 }
