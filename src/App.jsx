@@ -43,7 +43,6 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const [status, setStatus] = useState(null); 
 
   const telegramHandle = "FitaRegassa"; 
-  const businessEmail = "fita.regassa@gmail.com";
 
   if (!isOpen) return null;
 
@@ -73,55 +72,10 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
         return;
     }
 
-    const customerName = e.target.name.value;
-    const customerEmail = e.target.email.value;
-    const customerNote = e.target.note.value;
-
     if (contactMethod === 'telegram') {
-        const msg = `Booking Request for Boni Beauty Studio\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
+        const msg = `Booking Request for Boni Beauty Studio\n\nName: ${e.target.name.value}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${e.target.note.value}`;
         window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
         onClose();
-        return;
-    }
-
-    if (contactMethod === 'email') {
-        // Opens the customer's default mail app (Outlook/Mail/Gmail webmail, etc.)
-        // pre-addressed to the business, with the booking details and the
-        // customer's own email included in the body so it's captured as soon
-        // as they submit. mailto: links work the same way on desktop browsers
-        // and on phones (iOS/Android hand off to the installed mail app).
-        const subject = `Booking Request - ${customerName}`;
-        const body =
-            `Name: ${customerName}\n` +
-            `Customer Email: ${customerEmail}\n` +
-            `Date: ${bookingDate}\n` +
-            `Time: ${bookingTime}\n` +
-            `Services: ${selected.join(', ')}\n` +
-            `Note: ${customerNote}`;
-
-        const mailtoLink = `mailto:${businessEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        // Still log the request to Formspree in the background so you have a
-        // record even if the customer's device has no mail client configured.
-        try {
-            fetch("https://formspree.io/f/xvzjzrzq", {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: customerName,
-                    email: customerEmail,
-                    date: bookingDate,
-                    time: bookingTime,
-                    services: selected.join(', '),
-                    message: customerNote
-                }),
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-            });
-        } catch (err) {
-            // Non-blocking: mailto is the primary path for this contact method.
-        }
-
-        window.location.href = mailtoLink;
-        setStatus("success");
         return;
     }
 
@@ -131,12 +85,12 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
         const response = await fetch("https://formspree.io/f/xvzjzrzq", {
             method: 'POST',
             body: JSON.stringify({
-                name: customerName,
-                email: customerEmail,
+                name: e.target.name.value,
+                email: e.target.email.value,
                 date: bookingDate,
                 time: bookingTime,
                 services: selected.join(', '),
-                message: customerNote
+                message: e.target.note.value
             }),
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
         });
@@ -204,7 +158,7 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
                 
                 <textarea name="note" placeholder="Any special needs?" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="2"></textarea>
                 <button disabled={status === 'submitting'} type="submit" className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] transition disabled:opacity-50">
-                    {status === 'submitting' ? "Sending..." : contactMethod === 'email' ? "Send Email Request" : "Submit Request"}
+                    {status === 'submitting' ? "Sending..." : "Submit Request"}
                 </button>
             </form>
         )}
@@ -218,7 +172,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-
+  
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
@@ -254,19 +208,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
-
-      {/* DECORATIVE LEFT RAIL (desktop only) */}
-      <div className="hidden lg:flex flex-col items-center fixed top-0 left-0 h-screen w-14 z-40 pointer-events-none">
-        <div className="w-px flex-1 bg-gradient-to-b from-transparent via-[#C8B87B]/40 to-transparent mt-10"></div>
-        <div
-          className="text-[#C8B87B]/70 font-serif font-bold text-sm tracking-[0.3em] py-6"
-          style={{ writingMode: 'vertical-rl' }}
-        >
-          BONI
-        </div>
-        <div className="w-px flex-1 bg-gradient-to-b from-transparent via-[#C8B87B]/40 to-transparent mb-10"></div>
-      </div>
-
       <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-6 py-4">
   <div className="max-w-6xl mx-auto flex items-center justify-between">
 
@@ -511,7 +452,6 @@ export default function App() {
             </div>
          </div>
       </footer>
-
       <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
     </div>
   );
