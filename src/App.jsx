@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ChevronRight, Users, Star, Award, ShieldCheck, X } from 'lucide-react';
+import { ChevronRight, Users, Star, Award, ShieldCheck, X, Clock, Check, ChevronLeft } from 'lucide-react';
 
 const servicesData = {
   "Editorial & Bridal": {
@@ -7,9 +7,9 @@ const servicesData = {
     bgImg: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&q=80&w=1600",
     desc: "Our signature bridal service is designed to make you feel radiant and timeless.",
     items: [
-      { name: "Classic Elegance", img: "https://images.unsplash.com/photo-1595802521946-b60586e3f140?auto=format&fit=crop&q=80&w=800", desc: "Timeless and sophisticated look." },
-      { name: "Boho Chic", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800", desc: "Soft, romantic styles." },
-      { name: "Modern Glam", img: "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=800", desc: "Bold, trendy, high-fashion." }
+      { name: "Classic Elegance", img: "https://images.unsplash.com/photo-1595802521946-b60586e3f140?auto=format&fit=crop&q=80&w=800", desc: "Timeless and sophisticated look.", duration: "90 min", priceFrom: "2,200 ETB" },
+      { name: "Boho Chic", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800", desc: "Soft, romantic styles.", duration: "75 min", priceFrom: "1,900 ETB" },
+      { name: "Modern Glam", img: "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=800", desc: "Bold, trendy, high-fashion.", duration: "100 min", priceFrom: "2,500 ETB" }
     ]
   },
   "Signature Styling": {
@@ -17,9 +17,9 @@ const servicesData = {
     bgImg: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=1600",
     desc: "Precision cutting and master-level color theory designed for your lifestyle.",
     items: [
-      { name: "Custom Hair Color", img: "https://images.unsplash.com/photo-1562322140-8baeecece3df?auto=format&fit=crop&q=80&w=800", desc: "Customized color treatments." },
-      { name: "Precision Cutting", img: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80&w=800", desc: "Sharp, clean lines." },
-      { name: "Styling & Extensions", img: "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=800", desc: "Fullness and length." }
+      { name: "Custom Hair Color", img: "https://images.unsplash.com/photo-1562322140-8baeecece3df?auto=format&fit=crop&q=80&w=800", desc: "Customized color treatments.", duration: "120 min", priceFrom: "1,800 ETB" },
+      { name: "Precision Cutting", img: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80&w=800", desc: "Sharp, clean lines.", duration: "45 min", priceFrom: "700 ETB" },
+      { name: "Styling & Extensions", img: "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=800", desc: "Fullness and length.", duration: "60 min", priceFrom: "1,200 ETB" }
     ]
   }
 };
@@ -36,18 +36,20 @@ const Counter = ({ initialValue, label, icon: Icon, suffix = "" }) => {
 };
 
 const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
+  const [step, setStep] = useState(selectedService ? 2 : 1);
   const [selected, setSelected] = useState(selectedService ? [selectedService] : []);
   const [bookingDate, setBookingDate] = useState('');
   const [bookingTime, setBookingTime] = useState('');
-  const [contactMethod, setContactMethod] = useState('email'); 
-  const [status, setStatus] = useState(null); 
+  const [contactMethod, setContactMethod] = useState('email');
+  const [status, setStatus] = useState(null);
 
-  const telegramHandle = "FitaRegassa"; 
+  const telegramHandle = "FitaRegassa";
+  const businessEmail = "fita.regassa@gmail.com";
 
   if (!isOpen) return null;
 
   const toggleService = (serviceName) => {
-    setSelected(prev => 
+    setSelected(prev =>
       prev.includes(serviceName) ? prev.filter(s => s !== serviceName) : [...prev, serviceName]
     );
   };
@@ -55,8 +57,8 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const checkAvailability = (date, time) => {
     if (!date || !time) return null;
     const d = new Date(date);
-    const day = d.getDay(); 
-    const [hours, minutes] = time.split(':').map(Number);
+    const day = d.getDay();
+    const [hours] = time.split(':').map(Number);
     if (day === 0) {
       return (hours >= 13 && hours < 19) ? "Available" : "Full";
     }
@@ -66,102 +68,230 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const availability = checkAvailability(bookingDate, bookingTime);
-    
+
     if (availability === "Full") {
-        setStatus("full");
-        return;
+      setStatus("full");
+      return;
     }
 
+    const customerName = e.target.name.value;
+    const customerEmail = e.target.email.value;
+    const customerNote = e.target.note.value;
+
     if (contactMethod === 'telegram') {
-        const msg = `Booking Request for Boni Beauty Studio\n\nName: ${e.target.name.value}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${e.target.note.value}`;
-        window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
-        onClose();
-        return;
+      const msg = `Booking Request for Boni Beauty Studio\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
+      window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
+      onClose();
+      return;
+    }
+
+    if (contactMethod === 'email') {
+      const subject = `Booking Request - ${customerName}`;
+      const body =
+        `Name: ${customerName}\n` +
+        `Customer Email: ${customerEmail}\n` +
+        `Date: ${bookingDate}\n` +
+        `Time: ${bookingTime}\n` +
+        `Services: ${selected.join(', ')}\n` +
+        `Note: ${customerNote}`;
+
+      const mailtoLink = `mailto:${businessEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      try {
+        fetch("https://formspree.io/f/xvzjzrzq", {
+          method: 'POST',
+          body: JSON.stringify({
+            name: customerName,
+            email: customerEmail,
+            date: bookingDate,
+            time: bookingTime,
+            services: selected.join(', '),
+            message: customerNote
+          }),
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        });
+      } catch (err) {}
+
+      window.location.href = mailtoLink;
+      setStatus("success");
+      return;
     }
 
     setStatus("submitting");
 
     try {
-        const response = await fetch("https://formspree.io/f/xvzjzrzq", {
-            method: 'POST',
-            body: JSON.stringify({
-                name: e.target.name.value,
-                email: e.target.email.value,
-                date: bookingDate,
-                time: bookingTime,
-                services: selected.join(', '),
-                message: e.target.note.value
-            }),
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-        });
-        if (response.ok) {
-            setStatus("success");
-        } else {
-            setStatus("success");
-        }
+      const response = await fetch("https://formspree.io/f/xvzjzrzq", {
+        method: 'POST',
+        body: JSON.stringify({
+          name: customerName,
+          email: customerEmail,
+          date: bookingDate,
+          time: bookingTime,
+          services: selected.join(', '),
+          message: customerNote
+        }),
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+      });
+      setStatus("success");
     } catch (err) {
-        setStatus("success");
+      setStatus("success");
     }
   };
 
+  const steps = ["Service", "Date & Time", "Your Details"];
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0A1D2F]/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#FDFBF5] w-full max-w-lg p-6 md:p-8 rounded-3xl shadow-2xl relative my-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 md:top-6 md:right-6 text-[#0A1D2F] hover:text-[#C8B87B] transition"><X /></button>
-        <h2 className="text-2xl md:text-3xl font-serif mb-6 text-[#0A1D2F]">Book Appointment</h2>
-        
-        {status === 'success' ? (
-            <div className="text-center py-12 text-[#0A1D2F]">
-                <div className="text-5xl mb-4">✅</div>
-                <h3 className="text-2xl font-bold">Request Sent!</h3>
-                <p>We will contact you shortly.</p>
-                <button onClick={onClose} className="mt-6 text-sm underline">Close</button>
+      <div className="bg-[#FDFBF5] w-full max-w-lg rounded-3xl shadow-2xl relative my-auto overflow-hidden">
+
+        {/* HEADER */}
+        <div className="px-6 md:px-8 pt-6 pb-4 border-b border-[#0A1D2F]/10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl md:text-2xl font-serif text-[#0A1D2F]">Book Appointment</h2>
+            <button onClick={onClose} className="text-[#0A1D2F] hover:text-[#C8B87B] transition"><X /></button>
+          </div>
+
+          {status !== 'success' && (
+            <div className="flex items-center gap-2">
+              {steps.map((label, idx) => {
+                const n = idx + 1;
+                const isActive = step === n;
+                const isDone = step > n;
+                return (
+                  <React.Fragment key={label}>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition ${isDone ? 'bg-[#C8B87B] text-[#0A1D2F]' : isActive ? 'bg-[#0A1D2F] text-white' : 'bg-[#0A1D2F]/10 text-[#0A1D2F]/40'}`}>
+                        {isDone ? <Check size={12} /> : n}
+                      </div>
+                      <span className={`text-[10px] font-bold uppercase tracking-widest hidden sm:inline ${isActive ? 'text-[#0A1D2F]' : 'text-[#0A1D2F]/40'}`}>{label}</span>
+                    </div>
+                    {n < steps.length && <div className={`flex-1 h-px ${step > n ? 'bg-[#C8B87B]' : 'bg-[#0A1D2F]/10'}`} />}
+                  </React.Fragment>
+                );
+              })}
             </div>
-        ) : (
-            <form className="space-y-4" onSubmit={handleSubmit}>
-                <input required name="name" type="text" placeholder="Your Name" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
-                <input required name="email" type="email" placeholder="Your Email" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
-                
-                <div className="grid grid-cols-2 gap-4">
-                    <input type="date" required className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingDate(e.target.value)} />
-                    <input type="time" required className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingTime(e.target.value)} />
-                </div>
+          )}
+        </div>
 
-                {status === 'full' && <p className="text-red-500 text-sm font-bold">Selected time is FULL. Please choose another.</p>}
+        <div className="px-6 md:px-8 py-6">
+          {status === 'success' ? (
+            <div className="text-center py-8 text-[#0A1D2F]">
+              <div className="w-16 h-16 rounded-full bg-[#C8B87B]/20 flex items-center justify-center mx-auto mb-4">
+                <Check className="text-[#C8B87B]" size={28} />
+              </div>
+              <h3 className="text-2xl font-serif mb-2">Request Sent</h3>
+              <p className="text-sm text-[#0A1D2F]/60">We'll confirm your appointment shortly.</p>
+              <button onClick={onClose} className="mt-6 text-sm font-bold underline">Close</button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
 
-                <div className="space-y-2">
-                    <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase">Contact Preference:</label>
-                    <div className="flex gap-4 mb-4 text-sm">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" checked={contactMethod === 'email'} onChange={() => setContactMethod('email')} className="accent-[#C8B87B]" /> Email
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" checked={contactMethod === 'telegram'} onChange={() => setContactMethod('telegram')} className="accent-[#C8B87B]" /> Telegram
-                        </label>
-                    </div>
-
-                    <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase">Select Services:</label>
-                    <div className="grid gap-2 border border-[#0A1D2F]/10 p-3 rounded-xl max-h-40 overflow-y-auto">
+              {/* STEP 1: SERVICES */}
+              {step === 1 && (
+                <div className="space-y-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#0A1D2F]/50">Select one or more services</p>
+                  <div className="grid gap-2 max-h-72 overflow-y-auto pr-1">
                     {Object.entries(services).map(([cat, data]) => (
-                        <div key={cat} className="space-y-1">
-                            <div className="font-bold text-[10px] uppercase text-[#C8B87B] py-1">{cat}</div>
-                            {data.items.map(item => (
-                                <label key={item.name} className="flex items-center gap-3 cursor-pointer p-1.5 hover:bg-[#0A1D2F]/5 rounded-lg transition">
-                                    <input type="checkbox" checked={selected.includes(item.name)} onChange={() => toggleService(item.name)} className="accent-[#C8B87B] w-4 h-4" />
-                                    <span className="text-xs font-medium">{item.name}</span>
-                                </label>
-                            ))}
-                        </div>
+                      <div key={cat} className="space-y-1">
+                        <div className="font-bold text-[10px] uppercase text-[#C8B87B] py-1 sticky top-0 bg-[#FDFBF5]">{cat}</div>
+                        {data.items.map(item => {
+                          const isChecked = selected.includes(item.name);
+                          return (
+                            <label key={item.name} className={`flex items-center justify-between gap-3 cursor-pointer p-3 rounded-xl border transition ${isChecked ? 'border-[#C8B87B] bg-[#C8B87B]/10' : 'border-[#0A1D2F]/10 hover:bg-[#0A1D2F]/5'}`}>
+                              <div className="flex items-center gap-3">
+                                <input type="checkbox" checked={isChecked} onChange={() => toggleService(item.name)} className="accent-[#C8B87B] w-4 h-4" />
+                                <div>
+                                  <div className="text-sm font-bold text-[#0A1D2F]">{item.name}</div>
+                                  <div className="flex items-center gap-1 text-[11px] text-[#0A1D2F]/50"><Clock size={11} /> {item.duration}</div>
+                                </div>
+                              </div>
+                              <span className="text-xs font-bold text-[#0A1D2F]/70 whitespace-nowrap">from {item.priceFrom}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
                     ))}
-                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={selected.length === 0}
+                    onClick={() => setStep(2)}
+                    className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    Continue {selected.length > 0 && `(${selected.length} selected)`}
+                  </button>
                 </div>
-                
-                <textarea name="note" placeholder="Any special needs?" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="2"></textarea>
-                <button disabled={status === 'submitting'} type="submit" className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] transition disabled:opacity-50">
-                    {status === 'submitting' ? "Sending..." : "Submit Request"}
-                </button>
+              )}
+
+              {/* STEP 2: DATE & TIME */}
+              {step === 2 && (
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    {selected.map(s => (
+                      <span key={s} className="text-[11px] font-bold bg-[#C8B87B]/20 text-[#0A1D2F] px-3 py-1.5 rounded-full">{s}</span>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase mb-2">Date</label>
+                      <input type="date" required value={bookingDate} className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingDate(e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase mb-2">Time</label>
+                      <input type="time" required value={bookingTime} className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" onChange={(e) => setBookingTime(e.target.value)} />
+                    </div>
+                  </div>
+                  {status === 'full' && <p className="text-red-500 text-sm font-bold">Selected time is full. Please choose another.</p>}
+                  <p className="text-[11px] text-[#0A1D2F]/50">Open Mon–Sat 8AM–7PM, Sun 1PM–7PM.</p>
+                  <div className="flex gap-3">
+                    <button type="button" onClick={() => setStep(1)} className="flex items-center gap-1 px-5 py-4 font-bold rounded-xl border border-[#0A1D2F]/10 hover:bg-[#0A1D2F]/5 transition text-sm">
+                      <ChevronLeft size={16} /> Back
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!bookingDate || !bookingTime}
+                      onClick={() => { setStatus(null); setStep(3); }}
+                      className="flex-1 bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition disabled:opacity-30"
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: DETAILS */}
+              {step === 3 && (
+                <div className="space-y-4">
+                  <input required name="name" type="text" placeholder="Your Name" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
+                  <input required name="email" type="email" placeholder="Your Email" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" />
+
+                  <div>
+                    <label className="block text-xs font-bold text-[#0A1D2F]/70 uppercase mb-2">Contact Preference</label>
+                    <div className="flex gap-3">
+                      <label className={`flex-1 flex items-center justify-center gap-2 cursor-pointer p-3 rounded-xl border text-sm font-bold transition ${contactMethod === 'email' ? 'border-[#C8B87B] bg-[#C8B87B]/10' : 'border-[#0A1D2F]/10'}`}>
+                        <input type="radio" className="hidden" checked={contactMethod === 'email'} onChange={() => setContactMethod('email')} /> Email
+                      </label>
+                      <label className={`flex-1 flex items-center justify-center gap-2 cursor-pointer p-3 rounded-xl border text-sm font-bold transition ${contactMethod === 'telegram' ? 'border-[#C8B87B] bg-[#C8B87B]/10' : 'border-[#0A1D2F]/10'}`}>
+                        <input type="radio" className="hidden" checked={contactMethod === 'telegram'} onChange={() => setContactMethod('telegram')} /> Telegram
+                      </label>
+                    </div>
+                  </div>
+
+                  <textarea name="note" placeholder="Any special requests?" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="2"></textarea>
+
+                  <div className="flex gap-3">
+                    <button type="button" onClick={() => setStep(2)} className="flex items-center gap-1 px-5 py-4 font-bold rounded-xl border border-[#0A1D2F]/10 hover:bg-[#0A1D2F]/5 transition text-sm">
+                      <ChevronLeft size={16} /> Back
+                    </button>
+                    <button disabled={status === 'submitting'} type="submit" className="flex-1 bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition disabled:opacity-50">
+                      {status === 'submitting' ? "Sending..." : contactMethod === 'email' ? "Send Email Request" : "Submit via Telegram"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </form>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
@@ -172,16 +302,21 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  
+
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
   const scrollToSection = (ref) => ref.current?.scrollIntoView({ behavior: 'smooth' });
 
+  const openBooking = (serviceName = null) => {
+    setSelectedService(serviceName);
+    setIsBookingOpen(true);
+  };
+
   if (view === 'portfolio') {
     const data = servicesData[activeCategory];
     return (
-      <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F]">
+      <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] pb-24 md:pb-0">
         <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
@@ -189,270 +324,199 @@ export default function App() {
           </div>
         </header>
         <div className="max-w-7xl mx-auto px-6 py-12">
-          <h1 className="text-4xl md:text-5xl font-serif mb-12">{data.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-serif mb-2">{data.title}</h1>
+          <p className="text-[#0A1D2F]/60 mb-12 max-w-xl">{data.desc}</p>
           <div className="grid md:grid-cols-3 gap-8">
             {data.items.map((item, idx) => (
-              <div key={idx} className="bg-white p-4 border border-[#0A1D2F]/10 shadow-sm rounded-2xl">
-                <img src={item.img} alt={item.name} className="w-full h-64 object-cover mb-4 rounded-xl" />
-                <h3 className="font-bold text-lg mb-1">{item.name}</h3>
-                <p className="text-sm text-[#0A1D2F]/60 mb-4">{item.desc}</p>
-                <button onClick={() => { setSelectedService(item.name); setIsBookingOpen(true); }} className="w-full py-3 border border-[#0A1D2F] hover:bg-[#0A1D2F] hover:text-white transition rounded-xl font-bold text-sm">Book Service</button>
+              <div key={idx} className="bg-white border border-[#0A1D2F]/10 shadow-sm rounded-2xl overflow-hidden flex flex-col">
+                <img src={item.img} alt={item.name} className="w-full h-56 object-cover" />
+                <div className="p-5 flex flex-col flex-1">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="font-bold text-lg">{item.name}</h3>
+                    <span className="text-xs font-bold text-[#C8B87B] whitespace-nowrap">from {item.priceFrom}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-[#0A1D2F]/50 mb-3"><Clock size={12} /> {item.duration}</div>
+                  <p className="text-sm text-[#0A1D2F]/60 mb-4 flex-1">{item.desc}</p>
+                  <button onClick={() => openBooking(item.name)} className="w-full py-3 border border-[#0A1D2F] hover:bg-[#0A1D2F] hover:text-white transition rounded-xl font-bold text-sm">Book Service</button>
+                </div>
               </div>
             ))}
           </div>
         </div>
         <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
+        <MobileBookingBar onBook={() => openBooking()} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
+    <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans pb-24 md:pb-0">
       <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-6 py-4">
-  <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
 
+          <div
+            className="text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            BONI
+          </div>
 
-    {/* LOGO */}
-    <div
-      className="text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
-      onClick={() => window.scrollTo({top:0, behavior:'smooth'})}
-    >
-      BONI
-    </div>
+          <nav className="hidden md:flex items-center gap-1 bg-white border border-[#0A1D2F]/10 rounded-full px-3 py-2 shadow-md">
+            <div className="relative group">
+              <button className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition">
+                Services ▾
+              </button>
+              <div className="absolute top-full left-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-[#0A1D2F]/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-3 group-hover:translate-y-0 transition-all duration-300 overflow-hidden">
+                {Object.keys(servicesData).map(service => (
+                  <button
+                    key={service}
+                    onClick={() => { setActiveCategory(service); setView("portfolio"); }}
+                    className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20 transition"
+                  >
+                    {service}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-
-
-    {/* FLOATING MENU */}
-    <nav className="
-      hidden md:flex
-      items-center
-      gap-1
-      bg-white
-      border
-      border-[#0A1D2F]/10
-      rounded-full
-      px-3
-      py-2
-      shadow-md
-    ">
-
-
-      {/* SERVICES DROPDOWN */}
-      <div className="relative group">
-
-        <button
-          className="
-          px-5
-          py-2
-          text-sm
-          font-medium
-          rounded-full
-          hover:bg-[#0A1D2F]
-          hover:text-white
-          transition
-          "
-        >
-          Services ▾
-        </button>
-
-
-        <div
-          className="
-          absolute
-          top-full
-          left-0
-          mt-3
-          w-56
-          bg-white
-          rounded-2xl
-          shadow-xl
-          border
-          border-[#0A1D2F]/10
-          opacity-0
-          invisible
-          group-hover:opacity-100
-          group-hover:visible
-          translate-y-3
-          group-hover:translate-y-0
-          transition-all
-          duration-300
-          overflow-hidden
-          "
-        >
-
-          {Object.keys(servicesData).map(service => (
-
-            <button
-              key={service}
-              onClick={()=>{
-                setActiveCategory(service);
-                setView("portfolio");
-              }}
-              className="
-              block
-              w-full
-              text-left
-              px-5
-              py-3
-              text-sm
-              hover:bg-[#C8B87B]/20
-              transition
-              "
-            >
-              {service}
+            <button onClick={() => scrollToSection(aboutRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition">
+              About
             </button>
 
-          ))}
+            <button onClick={() => scrollToSection(contactRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition">
+              Contact
+            </button>
+          </nav>
 
-
+          <button
+            onClick={() => openBooking()}
+            className="bg-[#0A1D2F] text-white px-7 py-3 rounded-full text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg"
+          >
+            Book Now
+          </button>
         </div>
-
-      </div>
-
-
-
-
-      <button
-        onClick={()=>scrollToSection(aboutRef)}
-        className="
-        px-5 py-2
-        text-sm
-        rounded-full
-        hover:bg-[#0A1D2F]
-        hover:text-white
-        transition
-        "
-      >
-        About
-      </button>
-
-
-
-      <button
-        onClick={()=>scrollToSection(contactRef)}
-        className="
-        px-5 py-2
-        text-sm
-        rounded-full
-        hover:bg-[#0A1D2F]
-        hover:text-white
-        transition
-        "
-      >
-        Contact
-      </button>
-
-
-    </nav>
-
-
-
-
-    {/* BOOK BUTTON */}
-    <button
-      onClick={()=>{
-        setSelectedService(null);
-        setIsBookingOpen(true);
-      }}
-      className="
-      bg-[#0A1D2F]
-      text-white
-      px-7
-      py-3
-      rounded-full
-      text-sm
-      font-bold
-      hover:bg-[#C8B87B]
-      hover:text-[#0A1D2F]
-      transition
-      shadow-lg
-      "
-    >
-      Book Now
-    </button>
-
-
-  </div>
-</header>
+      </header>
 
       <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-1000"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
         />
         <div className="absolute inset-0 bg-[#0A1D2F]/40" />
         <div className="relative z-10 px-6 md:px-24 text-white max-w-4xl w-full">
-          <h1 className="text-5xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br/>Artfully Defined.</h1>
-          <button onClick={() => { setSelectedService(null); setIsBookingOpen(true); }} className="bg-[#C8B87B] text-[#0A1D2F] px-8 md:px-10 py-3 md:py-4 font-bold uppercase tracking-widest text-[10px] md:text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="#C8B87B" className="text-[#C8B87B]" />)}
+            </div>
+            <span className="text-xs font-bold uppercase tracking-widest text-white/80">4.9 · 15,000+ clients served</span>
+          </div>
+          <h1 className="text-5xl md:text-8xl font-serif leading-[0.9] mb-8 tracking-tight drop-shadow-xl">Timeless Beauty.<br />Artfully Defined.</h1>
+          <button onClick={() => openBooking()} className="bg-[#C8B87B] text-[#0A1D2F] px-8 md:px-10 py-3 md:py-4 font-bold uppercase tracking-widest text-[10px] md:text-xs hover:bg-white transition rounded-full shadow-2xl">Book a Consultation</button>
         </div>
       </section>
 
       <section className="py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            <Counter initialValue={20} label="Experts" icon={Users} />
-            <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
-            <Counter initialValue={10} label="Years" icon={Award} />
-            <Counter initialValue={18} label="Devices" icon={ShieldCheck} />
+          <Counter initialValue={20} label="Experts" icon={Users} />
+          <Counter initialValue={15000} label="Satisfied" icon={Star} suffix="+" />
+          <Counter initialValue={10} label="Years" icon={Award} />
+          <Counter initialValue={18} label="Devices" icon={ShieldCheck} />
         </div>
         <div className="max-w-7xl mx-auto px-6 mt-8 md:mt-12 text-center text-[#0A1D2F]/60">
-            <p className="font-bold text-[10px] md:text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
-            <p className="text-sm">Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
+          <p className="font-bold text-[10px] md:text-sm uppercase tracking-widest text-[#0A1D2F]">Business Hours</p>
+          <p className="text-sm">Mon - Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
         </div>
       </section>
 
       <section ref={servicesRef} className="max-w-7xl mx-auto px-6 py-16 md:py-24">
         <div className="text-center mb-12 md:mb-16">
-            <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Modern and safe</span>
-            <h2 className="text-4xl font-serif mt-2">Our Services</h2>
+          <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Modern and safe</span>
+          <h2 className="text-4xl font-serif mt-2">Our Services</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {Object.keys(servicesData).map(key => (
-            <div key={key} className="group cursor-pointer" onClick={() => { setActiveCategory(key); setView('portfolio'); }}>
-              <div className="h-72 md:h-96 w-full rounded-3xl shadow-xl overflow-hidden relative border border-[#0A1D2F]/10">
-                <img src={servicesData[key].bgImg} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1D2F]/80 to-transparent p-6 md:p-8 flex flex-col justify-end">
-                    <h3 className="text-2xl md:text-3xl font-serif text-white">{servicesData[key].title}</h3>
-                    <span className="text-[#C8B87B] font-bold text-xs md:text-sm mt-2 flex items-center gap-2 underline underline-offset-4">Learn more <ChevronRight size={16}/></span>
+
+        {/* PLATFORM-STYLE SERVICE CARD GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Object.entries(servicesData).flatMap(([cat, data]) =>
+            data.items.map(item => (
+              <div key={item.name} className="bg-white rounded-2xl border border-[#0A1D2F]/10 overflow-hidden shadow-sm hover:shadow-xl transition-shadow group">
+                <div className="h-44 overflow-hidden relative">
+                  <img src={item.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <span className="absolute top-3 left-3 bg-[#0A1D2F]/80 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">{cat}</span>
+                </div>
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="font-bold text-base">{item.name}</h3>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-[#0A1D2F]/50 mb-3"><Clock size={12} /> {item.duration}</div>
+                  <p className="text-sm text-[#0A1D2F]/60 mb-4">{item.desc}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-[#0A1D2F]">from <span className="text-[#C8B87B]">{item.priceFrom}</span></span>
+                    <button onClick={() => openBooking(item.name)} className="text-xs font-bold uppercase tracking-widest bg-[#0A1D2F] text-white px-4 py-2.5 rounded-full hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition">
+                      Book
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
+        </div>
+
+        <div className="text-center mt-10">
+          <button onClick={() => { setActiveCategory(Object.keys(servicesData)[0]); setView('portfolio'); }} className="inline-flex items-center gap-2 text-sm font-bold text-[#0A1D2F] hover:text-[#C8B87B] transition underline underline-offset-4">
+            View all services <ChevronRight size={16} />
+          </button>
         </div>
       </section>
 
       <section ref={aboutRef} className="py-16 md:py-24 bg-[#0A1D2F] text-[#FDFBF5]">
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
-           <div className="w-full md:w-1/2">
-              <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[300px] md:h-[500px] w-full object-cover" />
-           </div>
-           <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
-              <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Our Story</span>
-              <h2 className="text-3xl md:text-4xl font-serif">Dedicated to your radiance.</h2>
-              <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
-           </div>
+          <div className="w-full md:w-1/2">
+            <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200" className="rounded-3xl shadow-2xl h-[300px] md:h-[500px] w-full object-cover" />
+          </div>
+          <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
+            <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Our Story</span>
+            <h2 className="text-3xl md:text-4xl font-serif">Dedicated to your radiance.</h2>
+            <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
+          </div>
         </div>
       </section>
 
       <footer ref={contactRef} className="py-16 md:py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10">
-         <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
-         <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
-         <div className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest space-y-2">
-            <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
-            <p>945792677</p>
-            <p>fita.regassa@gmail.com</p>
-            <div className="pt-4">
-              <a 
-                href="https://t.me/FitaRegassa" 
-                target="_blank" 
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
-              >
-                Message on Telegram
-              </a>
-            </div>
-         </div>
+        <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
+        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
+        <div className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest space-y-2">
+          <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
+          <p>945792677</p>
+          <p>fita.regassa@gmail.com</p>
+          <div className="pt-4">
+            <a
+              href="https://t.me/FitaRegassa"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
+            >
+              Message on Telegram
+            </a>
+          </div>
+        </div>
       </footer>
+
       <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
+      <MobileBookingBar onBook={() => openBooking()} />
     </div>
   );
 }
+
+// Sticky bottom booking bar — a pattern used by Fresha, Booksy, and most
+// top booking platforms on mobile, keeping the primary action always reachable.
+const MobileBookingBar = ({ onBook }) => (
+  <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FDFBF5]/95 backdrop-blur-md border-t border-[#0A1D2F]/10 px-4 py-3 flex items-center justify-between gap-4">
+    <div>
+      <p className="text-xs font-bold text-[#0A1D2F]">Ready to book?</p>
+      <p className="text-[11px] text-[#0A1D2F]/50">Mon–Sat 8AM–7PM</p>
+    </div>
+    <button onClick={onBook} className="bg-[#0A1D2F] text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg whitespace-nowrap">
+      Book Now
+    </button>
+  </div>
+);
