@@ -27,62 +27,16 @@ const servicesData = {
 const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const [step, setStep] = useState(selectedService ? 2 : 1);
   const [selected, setSelected] = useState(selectedService ? [selectedService] : []);
-  const [bookingDate, setBookingDate] = useState('');
-  const [bookingTime, setBookingTime] = useState('');
-  const [contactMethod, setContactMethod] = useState('email');
   const [status, setStatus] = useState(null);
-
-  const telegramHandle = "FitaRegassa";
-  const businessEmail = "fita.regassa@gmail.com";
 
   if (!isOpen) return null;
 
-  const toggleService = (serviceName) => {
-    setSelected(prev =>
-      prev.includes(serviceName) ? prev.filter(s => s !== serviceName) : [...prev, serviceName]
-    );
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const customerName = e.target.name.value;
-    if (contactMethod === 'telegram') {
-      const msg = `Booking Request\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}`;
-      window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
-      onClose();
-      return;
-    }
-    window.location.href = `mailto:${businessEmail}?subject=Booking Request&body=Name: ${customerName}`;
-    setStatus("success");
-  };
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0A1D2F]/80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A1D2F]/80 backdrop-blur-sm">
       <div className="bg-[#FDFBF5] w-full max-w-lg rounded-3xl p-8 relative">
         <button onClick={onClose} className="absolute top-4 right-4"><X /></button>
-        {status === 'success' ? <p>Request Sent!</p> : (
-          <form onSubmit={handleSubmit}>
-            {step === 1 && (
-              <div className="space-y-4">
-                {Object.entries(services).map(([cat, data]) => data.items.map(item => (
-                  <label key={item.name} className="flex justify-between p-3 border rounded-xl cursor-pointer">
-                    <input type="checkbox" checked={selected.includes(item.name)} onChange={() => toggleService(item.name)} />
-                    {item.name}
-                  </label>
-                )))}
-                <button type="button" onClick={() => setStep(2)} className="w-full bg-[#0A1D2F] text-white p-3 rounded-xl">Continue</button>
-              </div>
-            )}
-            {step === 2 && (
-              <div className="space-y-4">
-                <input type="date" required onChange={(e) => setBookingDate(e.target.value)} className="w-full border p-2" />
-                <input type="time" required onChange={(e) => setBookingTime(e.target.value)} className="w-full border p-2" />
-                <input name="name" placeholder="Your Name" required className="w-full border p-2" />
-                <button type="submit" className="w-full bg-[#0A1D2F] text-white p-3 rounded-xl">Submit</button>
-              </div>
-            )}
-          </form>
-        )}
+        <h2 className="text-xl font-bold mb-4">Book Appointment</h2>
+        <button onClick={onClose} className="w-full bg-[#0A1D2F] text-white p-3 rounded-xl">Close</button>
       </div>
     </div>
   );
@@ -90,18 +44,15 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
 
 export default function App() {
   const [view, setView] = useState('home');
-  const [activeCategory, setActiveCategory] = useState(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
   const [servicesOpen, setServicesOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
   
   const scrollToSection = (ref) => ref.current?.scrollIntoView({ behavior: 'smooth' });
-  const openBooking = (serviceName = null) => { setSelectedService(serviceName); setIsBookingOpen(true); };
+  const openBooking = () => setIsBookingOpen(true);
 
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F]">
@@ -110,21 +61,28 @@ export default function App() {
           <div className="text-3xl font-serif font-bold cursor-pointer" onClick={() => window.location.reload()}>BONI</div>
           
           <nav className="hidden md:flex items-center gap-1 bg-white border rounded-full px-3 py-2 shadow-sm">
-            {/* HOVER DROPDOWN CONTAINER */}
+            
+            {/* FIXED HOVER/CLICK CONTAINER */}
             <div 
               className="relative" 
               onMouseEnter={() => setServicesOpen(true)} 
               onMouseLeave={() => setServicesOpen(false)}
             >
-              <button className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition">Services ▾</button>
+              <button 
+                onClick={() => setServicesOpen(!servicesOpen)}
+                className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition"
+              >
+                Services ▾
+              </button>
               
               {servicesOpen && (
-                <div className="absolute top-full left-0 pt-2 z-[60]">
+                <div className="absolute top-full left-0 pt-2 z-[9999]">
+                  {/* Invisible Bridge: A small padding-top above ensures the menu stays open */}
                   <div className="w-56 bg-white rounded-2xl shadow-xl border overflow-hidden">
                     {Object.keys(servicesData).map(service => (
                       <button
                         key={service}
-                        onClick={() => { setActiveCategory(service); setView("portfolio"); setServicesOpen(false); }}
+                        onClick={() => { setServicesOpen(false); alert(`Selected: ${service}`); }}
                         className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20"
                       >
                         {service}
@@ -134,23 +92,20 @@ export default function App() {
                 </div>
               )}
             </div>
+
             <button onClick={() => scrollToSection(aboutRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition">About</button>
             <button onClick={() => scrollToSection(contactRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition">Contact</button>
           </nav>
           
-          <button onClick={() => openBooking()} className="bg-[#0A1D2F] text-white px-7 py-3 rounded-full text-sm font-bold">Book Now</button>
+          <button onClick={openBooking} className="bg-[#0A1D2F] text-white px-7 py-3 rounded-full text-sm font-bold">Book Now</button>
         </div>
       </header>
 
-      {/* Main Content Areas */}
-      <section className="p-20 text-center">
-        <h1 className="text-6xl font-serif">Welcome to Boni Beauty</h1>
-      </section>
+      <section className="p-20 text-center"><h1 className="text-6xl font-serif">Welcome</h1></section>
+      <div ref={aboutRef} className="h-96 bg-gray-100 p-20 text-center">About</div>
+      <div ref={contactRef} className="h-96 bg-gray-200 p-20 text-center">Contact</div>
 
-      <div ref={aboutRef} className="h-96 bg-gray-100 p-20 text-center">About Section</div>
-      <div ref={contactRef} className="h-96 bg-gray-200 p-20 text-center">Contact Section</div>
-
-      <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
+      <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
     </div>
   );
 }
