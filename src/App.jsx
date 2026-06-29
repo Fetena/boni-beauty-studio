@@ -79,7 +79,7 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
     const customerNote = e.target.note.value;
 
     if (contactMethod === 'telegram') {
-      const msg = `Booking Request for Boni Beauty Studio\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
+      const msg = `Booking Request for BONI BEAUTY SALON\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
       window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
       onClose();
       return;
@@ -347,7 +347,6 @@ export default function App() {
           </div>
         </div>
         <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
-        <MobileBookingBar onBook={() => openBooking()} />
       </div>
     );
   }
@@ -575,47 +574,20 @@ export default function App() {
           <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
             <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Our Story</span>
             <h2 className="text-3xl md:text-4xl font-serif">Dedicated to your radiance.</h2>
-            <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
+            <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">BONI BEAUTY SALON merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
           </div>
         </div>
       </section>
 
       <footer ref={contactRef} className="py-16 md:py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10">
-        <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
-        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
+        <p className="font-serif text-2xl font-bold">BONI BEAUTY SALON</p>
+        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 BONI BEAUTY SALON. All rights reserved.</p>
         <div className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest space-y-2">
           <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
-          <p>945792677</p>
-          <p>fita.regassa@gmail.com</p>
-          <div className="pt-4">
-            <a
-              href="https://t.me/FitaRegassa"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#0088cc] text-white px-6 py-2 rounded-full hover:bg-[#0077b5] transition text-sm"
-            >
-              Message on Telegram
-            </a>
-          </div>
+          <p>9457926</p>
         </div>
       </footer>
-
       <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
-      <MobileBookingBar onBook={() => openBooking()} />
     </div>
   );
 }
-
-// Sticky bottom booking bar — a pattern used by Fresha, Booksy, and most
-// top booking platforms on mobile, keeping the primary action always reachable.
-const MobileBookingBar = ({ onBook }) => (
-  <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FDFBF5]/95 backdrop-blur-md border-t border-[#0A1D2F]/10 px-4 py-3 flex items-center justify-between gap-4">
-    <div>
-      <p className="text-xs font-bold text-[#0A1D2F]">Ready to book?</p>
-      <p className="text-[11px] text-[#0A1D2F]/50">Mon–Sat 8AM–7PM</p>
-    </div>
-    <button onClick={onBook} className="bg-[#0A1D2F] text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg whitespace-nowrap">
-      Book Now
-    </button>
-  </div>
-);
