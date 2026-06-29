@@ -43,7 +43,6 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
   const [status, setStatus] = useState(null); 
 
   const telegramHandle = "FitaRegassa"; 
-  const businessEmail = "fita.regassa@gmail.com";
 
   if (!isOpen) return null;
 
@@ -73,55 +72,10 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
         return;
     }
 
-    const customerName = e.target.name.value;
-    const customerEmail = e.target.email.value;
-    const customerNote = e.target.note.value;
-
     if (contactMethod === 'telegram') {
-        const msg = `Booking Request for Boni Beauty Studio\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
+        const msg = `Booking Request for Boni Beauty Studio\n\nName: ${e.target.name.value}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${e.target.note.value}`;
         window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
         onClose();
-        return;
-    }
-
-    if (contactMethod === 'email') {
-        // Opens the customer's default mail app (Outlook/Mail/Gmail webmail, etc.)
-        // pre-addressed to the business, with the booking details and the
-        // customer's own email included in the body so it's captured as soon
-        // as they submit. mailto: links work the same way on desktop browsers
-        // and on phones (iOS/Android hand off to the installed mail app).
-        const subject = `Booking Request - ${customerName}`;
-        const body =
-            `Name: ${customerName}\n` +
-            `Customer Email: ${customerEmail}\n` +
-            `Date: ${bookingDate}\n` +
-            `Time: ${bookingTime}\n` +
-            `Services: ${selected.join(', ')}\n` +
-            `Note: ${customerNote}`;
-
-        const mailtoLink = `mailto:${businessEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        // Still log the request to Formspree in the background so you have a
-        // record even if the customer's device has no mail client configured.
-        try {
-            fetch("https://formspree.io/f/xvzjzrzq", {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: customerName,
-                    email: customerEmail,
-                    date: bookingDate,
-                    time: bookingTime,
-                    services: selected.join(', '),
-                    message: customerNote
-                }),
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-            });
-        } catch (err) {
-            // Non-blocking: mailto is the primary path for this contact method.
-        }
-
-        window.location.href = mailtoLink;
-        setStatus("success");
         return;
     }
 
@@ -131,12 +85,12 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
         const response = await fetch("https://formspree.io/f/xvzjzrzq", {
             method: 'POST',
             body: JSON.stringify({
-                name: customerName,
-                email: customerEmail,
+                name: e.target.name.value,
+                email: e.target.email.value,
                 date: bookingDate,
                 time: bookingTime,
                 services: selected.join(', '),
-                message: customerNote
+                message: e.target.note.value
             }),
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
         });
@@ -204,7 +158,7 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
                 
                 <textarea name="note" placeholder="Any special needs?" className="w-full p-3 md:p-4 border border-[#0A1D2F]/10 rounded-xl bg-transparent" rows="2"></textarea>
                 <button disabled={status === 'submitting'} type="submit" className="w-full bg-[#0A1D2F] text-white py-4 font-bold rounded-xl hover:bg-[#C8B87B] transition disabled:opacity-50">
-                    {status === 'submitting' ? "Sending..." : contactMethod === 'email' ? "Send Email Request" : "Submit Request"}
+                    {status === 'submitting' ? "Sending..." : "Submit Request"}
                 </button>
             </form>
         )}
@@ -218,9 +172,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
@@ -255,144 +207,173 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans md:flex">
+    <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans">
+      <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-6 py-4">
+  <div className="max-w-6xl mx-auto flex items-center justify-between">
 
-      {/* DESKTOP SIDEBAR */}
-      <aside className="
-        hidden md:flex md:flex-col
-        fixed top-0 left-0 h-screen w-20
-        border-r border-[#0A1D2F]/10
-        bg-[#FDFBF5]
-        items-center
-        py-8
-        z-50
-      ">
-        <div
-          className="font-serif font-bold text-xl tracking-tight text-[#0A1D2F] cursor-pointer mb-12"
-          style={{ writingMode: 'vertical-rl' }}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
-          BONI
-        </div>
 
-        <nav className="flex flex-col items-center gap-6 flex-1">
-          <div className="relative">
-            <button
-              onClick={() => setServicesOpen(prev => !prev)}
-              onMouseEnter={() => setServicesOpen(true)}
-              className="text-[10px] font-bold uppercase tracking-widest text-[#0A1D2F]/60 hover:text-[#C8B87B] transition"
-              style={{ writingMode: 'vertical-rl' }}
-            >
-              Services
-            </button>
+    {/* LOGO */}
+    <div
+      className="text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
+      onClick={() => window.scrollTo({top:0, behavior:'smooth'})}
+    >
+      BONI
+    </div>
 
-            {servicesOpen && (
-              <div
-                onMouseLeave={() => setServicesOpen(false)}
-                className="absolute left-full top-0 ml-3 w-56 bg-white rounded-2xl shadow-xl border border-[#0A1D2F]/10 overflow-hidden"
-              >
-                {Object.keys(servicesData).map(service => (
-                  <button
-                    key={service}
-                    onClick={() => {
-                      setActiveCategory(service);
-                      setView("portfolio");
-                      setServicesOpen(false);
-                    }}
-                    className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20 transition"
-                  >
-                    {service}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
 
-          <button
-            onClick={() => scrollToSection(aboutRef)}
-            className="text-[10px] font-bold uppercase tracking-widest text-[#0A1D2F]/60 hover:text-[#C8B87B] transition"
-            style={{ writingMode: 'vertical-rl' }}
-          >
-            About
-          </button>
 
-          <button
-            onClick={() => scrollToSection(contactRef)}
-            className="text-[10px] font-bold uppercase tracking-widest text-[#0A1D2F]/60 hover:text-[#C8B87B] transition"
-            style={{ writingMode: 'vertical-rl' }}
-          >
-            Contact
-          </button>
-        </nav>
+    {/* FLOATING MENU */}
+    <nav className="
+      hidden md:flex
+      items-center
+      gap-1
+      bg-white
+      border
+      border-[#0A1D2F]/10
+      rounded-full
+      px-3
+      py-2
+      shadow-md
+    ">
+
+
+      {/* SERVICES DROPDOWN */}
+      <div className="relative group">
 
         <button
-          onClick={() => { setSelectedService(null); setIsBookingOpen(true); }}
-          className="bg-[#0A1D2F] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-4 rounded-full hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg"
-          style={{ writingMode: 'vertical-rl' }}
+          className="
+          px-5
+          py-2
+          text-sm
+          font-medium
+          rounded-full
+          hover:bg-[#0A1D2F]
+          hover:text-white
+          transition
+          "
         >
-          Book Now
+          Services ▾
         </button>
-      </aside>
 
-      {/* MOBILE TOP BAR */}
-      <header className="md:hidden sticky top-0 z-50 bg-[#FDFBF5]/90 backdrop-blur-md px-6 py-4 border-b border-[#0A1D2F]/10">
-        <div className="flex items-center justify-between">
-          <div
-            className="text-2xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            BONI
-          </div>
-          <div className="flex items-center gap-3">
+
+        <div
+          className="
+          absolute
+          top-full
+          left-0
+          mt-3
+          w-56
+          bg-white
+          rounded-2xl
+          shadow-xl
+          border
+          border-[#0A1D2F]/10
+          opacity-0
+          invisible
+          group-hover:opacity-100
+          group-hover:visible
+          translate-y-3
+          group-hover:translate-y-0
+          transition-all
+          duration-300
+          overflow-hidden
+          "
+        >
+
+          {Object.keys(servicesData).map(service => (
+
             <button
-              onClick={() => { setSelectedService(null); setIsBookingOpen(true); }}
-              className="bg-[#0A1D2F] text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg"
+              key={service}
+              onClick={()=>{
+                setActiveCategory(service);
+                setView("portfolio");
+              }}
+              className="
+              block
+              w-full
+              text-left
+              px-5
+              py-3
+              text-sm
+              hover:bg-[#C8B87B]/20
+              transition
+              "
             >
-              Book Now
+              {service}
             </button>
-            <button
-              onClick={() => setMobileMenuOpen(prev => !prev)}
-              className="w-10 h-10 flex items-center justify-center rounded-full border border-[#0A1D2F]/10"
-              aria-label="Menu"
-            >
-              <div className="space-y-1.5">
-                <span className="block w-5 h-0.5 bg-[#0A1D2F]"></span>
-                <span className="block w-5 h-0.5 bg-[#0A1D2F]"></span>
-                <span className="block w-5 h-0.5 bg-[#0A1D2F]"></span>
-              </div>
-            </button>
-          </div>
+
+          ))}
+
+
         </div>
 
-        {mobileMenuOpen && (
-          <div className="mt-4 flex flex-col gap-1 pb-2">
-            {Object.keys(servicesData).map(service => (
-              <button
-                key={service}
-                onClick={() => { setActiveCategory(service); setView("portfolio"); setMobileMenuOpen(false); }}
-                className="text-left px-4 py-3 text-sm rounded-xl hover:bg-[#C8B87B]/20 transition"
-              >
-                {service}
-              </button>
-            ))}
-            <button
-              onClick={() => { scrollToSection(aboutRef); setMobileMenuOpen(false); }}
-              className="text-left px-4 py-3 text-sm rounded-xl hover:bg-[#C8B87B]/20 transition"
-            >
-              About
-            </button>
-            <button
-              onClick={() => { scrollToSection(contactRef); setMobileMenuOpen(false); }}
-              className="text-left px-4 py-3 text-sm rounded-xl hover:bg-[#C8B87B]/20 transition"
-            >
-              Contact
-            </button>
-          </div>
-        )}
-      </header>
+      </div>
 
-      {/* PAGE CONTENT (shifted right of sidebar on desktop) */}
-      <div className="flex-1 md:ml-20 min-w-0">
+
+
+
+      <button
+        onClick={()=>scrollToSection(aboutRef)}
+        className="
+        px-5 py-2
+        text-sm
+        rounded-full
+        hover:bg-[#0A1D2F]
+        hover:text-white
+        transition
+        "
+      >
+        About
+      </button>
+
+
+
+      <button
+        onClick={()=>scrollToSection(contactRef)}
+        className="
+        px-5 py-2
+        text-sm
+        rounded-full
+        hover:bg-[#0A1D2F]
+        hover:text-white
+        transition
+        "
+      >
+        Contact
+      </button>
+
+
+    </nav>
+
+
+
+
+    {/* BOOK BUTTON */}
+    <button
+      onClick={()=>{
+        setSelectedService(null);
+        setIsBookingOpen(true);
+      }}
+      className="
+      bg-[#0A1D2F]
+      text-white
+      px-7
+      py-3
+      rounded-full
+      text-sm
+      font-bold
+      hover:bg-[#C8B87B]
+      hover:text-[#0A1D2F]
+      transition
+      shadow-lg
+      "
+    >
+      Book Now
+    </button>
+
+
+  </div>
+</header>
 
       <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center overflow-hidden">
         <div 
@@ -471,8 +452,6 @@ export default function App() {
             </div>
          </div>
       </footer>
-      </div>
-
       <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} services={servicesData} selectedService={selectedService} />
     </div>
   );
