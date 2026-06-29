@@ -1,0 +1,46 @@
+name: Deploy React App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+```eof
+
+### 2. Fix `vite.config.js`
+Replace the content of `vite.config.js` in your root folder with this code. This tells the build process to look for files in the correct location for GitHub Pages:
+
+```javascript:vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/boni-beauty-studio/',
+})
+```eof
+
+### What to do next:
+1.  **Copy and paste** these into the respective files in your GitHub repository.
+2.  **Commit the changes.**
+3.  **Check the "Actions" tab:** Click on it, and you will see a new run starting. It will take a minute or two to complete.
+4.  Once you see a **green checkmark**, your site will be correctly built and live! 
+
+This will fix the syntax error and the routing issue, allowing your React project to deploy successfully without deleting any of your work.
