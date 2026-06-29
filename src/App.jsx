@@ -364,29 +364,37 @@ export default function App() {
             BONI
           </div>
 
-          {/* DESKTOP NAV */}
-          <nav className="hidden md:flex items-center gap-1 bg-white border border-[#0A1D2F]/10 rounded-full px-3 py-2 shadow-md">
-            <div className="relative" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
-              <button
-                onClick={() => setServicesOpen(prev => !prev)}
-                className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap"
-              >
-                Services ▾
-              </button>
-              {servicesOpen && (
-                <div className="absolute top-full left-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-[#0A1D2F]/10 overflow-hidden z-50">
-                  {Object.keys(servicesData).map(service => (
-                    <button
-                      key={service}
-                      onClick={() => { setActiveCategory(service); setView("portfolio"); setServicesOpen(false); }}
-                      className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20 transition"
-                    >
-                      {service}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+          {/* Desktop Services Dropdown Wrapper */}
+<div 
+  className="relative" 
+  onMouseEnter={() => setServicesOpen(true)} 
+  onMouseLeave={() => setServicesOpen(false)}
+>
+  <button className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
+    Services ▾
+  </button>
+  
+  {/* The 'pt-2' here acts as a bridge so the hover state doesn't break when moving to the menu */}
+  {servicesOpen && (
+    <div className="absolute top-full left-0 pt-2 z-50">
+      <div className="w-56 bg-white rounded-2xl shadow-xl border border-[#0A1D2F]/10 overflow-hidden">
+        {Object.keys(servicesData).map(service => (
+          <button
+            key={service}
+            onClick={() => { 
+              setActiveCategory(service); 
+              setView("portfolio"); 
+              setServicesOpen(false); 
+            }}
+            className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20 transition"
+          >
+            {service}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
 
             <button onClick={() => scrollToSection(aboutRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
               About
