@@ -303,6 +303,8 @@ export default function App() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
@@ -353,7 +355,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans pb-24 md:pb-0">
       <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-y-2 gap-x-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
 
           <div
             className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
@@ -362,11 +364,12 @@ export default function App() {
             BONI
           </div>
 
-          <nav className="order-3 w-full sm:order-none sm:w-auto flex items-center justify-center gap-0.5 sm:gap-1 bg-white border border-[#0A1D2F]/10 rounded-full px-2 sm:px-3 py-1.5 sm:py-2 shadow-md">
+          {/* DESKTOP NAV */}
+          <nav className="hidden md:flex items-center gap-1 bg-white border border-[#0A1D2F]/10 rounded-full px-3 py-2 shadow-md">
             <div className="relative" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
               <button
                 onClick={() => setServicesOpen(prev => !prev)}
-                className="px-3 sm:px-5 py-2 text-xs sm:text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap"
+                className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap"
               >
                 Services ▾
               </button>
@@ -385,23 +388,113 @@ export default function App() {
               )}
             </div>
 
-            <button onClick={() => scrollToSection(aboutRef)} className="px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
+            <button onClick={() => scrollToSection(aboutRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
               About
             </button>
 
-            <button onClick={() => scrollToSection(contactRef)} className="px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
+            <button onClick={() => scrollToSection(contactRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
               Contact
             </button>
           </nav>
 
-          <button
-            onClick={() => openBooking()}
-            className="bg-[#0A1D2F] text-white px-4 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg whitespace-nowrap"
-          >
-            Book Now
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => openBooking()}
+              className="bg-[#0A1D2F] text-white px-4 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg whitespace-nowrap"
+            >
+              Book Now
+            </button>
+
+            {/* MOBILE MENU TRIGGER */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-[#0A1D2F]/10 bg-white shadow-sm shrink-0"
+              aria-label="Open menu"
+            >
+              <div className="space-y-1.5">
+                <span className="block w-5 h-0.5 bg-[#0A1D2F]"></span>
+                <span className="block w-5 h-0.5 bg-[#0A1D2F]"></span>
+                <span className="block w-5 h-0.5 bg-[#0A1D2F]"></span>
+              </div>
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* MOBILE SLIDE-IN DRAWER */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-[100]">
+          <div
+            className="absolute inset-0 bg-[#0A1D2F]/50 backdrop-blur-sm"
+            onClick={() => { setMobileMenuOpen(false); setMobileServicesOpen(false); }}
+          />
+          <div className="absolute top-0 right-0 h-full w-72 max-w-[80%] bg-[#FDFBF5] shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-[#0A1D2F]/10">
+              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI</span>
+              <button
+                onClick={() => { setMobileMenuOpen(false); setMobileServicesOpen(false); }}
+                className="text-[#0A1D2F] hover:text-[#C8B87B] transition"
+                aria-label="Close menu"
+              >
+                <X />
+              </button>
+            </div>
+
+            <nav className="flex-1 px-4 py-4 flex flex-col gap-1 overflow-y-auto">
+              <div>
+                <button
+                  onClick={() => setMobileServicesOpen(prev => !prev)}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl hover:bg-[#C8B87B]/15 transition"
+                >
+                  Services
+                  <ChevronRight size={16} className={`transition-transform ${mobileServicesOpen ? 'rotate-90' : ''}`} />
+                </button>
+                {mobileServicesOpen && (
+                  <div className="pl-4 flex flex-col gap-1 mt-1">
+                    {Object.keys(servicesData).map(service => (
+                      <button
+                        key={service}
+                        onClick={() => {
+                          setActiveCategory(service);
+                          setView("portfolio");
+                          setMobileMenuOpen(false);
+                          setMobileServicesOpen(false);
+                        }}
+                        className="text-left px-4 py-3 text-sm rounded-xl hover:bg-[#C8B87B]/15 transition text-[#0A1D2F]/80"
+                      >
+                        {service}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => { scrollToSection(aboutRef); setMobileMenuOpen(false); }}
+                className="text-left px-4 py-3 text-sm font-bold rounded-xl hover:bg-[#C8B87B]/15 transition"
+              >
+                About
+              </button>
+
+              <button
+                onClick={() => { scrollToSection(contactRef); setMobileMenuOpen(false); }}
+                className="text-left px-4 py-3 text-sm font-bold rounded-xl hover:bg-[#C8B87B]/15 transition"
+              >
+                Contact
+              </button>
+            </nav>
+
+            <div className="p-4 border-t border-[#0A1D2F]/10">
+              <button
+                onClick={() => { setMobileMenuOpen(false); openBooking(); }}
+                className="w-full bg-[#0A1D2F] text-white py-3.5 rounded-full text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg"
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center overflow-hidden">
         <div
