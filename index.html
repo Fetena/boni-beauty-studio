@@ -40,7 +40,7 @@
 </html>
 ```eof
 
-6.  Click **Commit changes**.
-7.  Wait 30 seconds and refresh your live site.
+5.  Click **Commit changes**.
+6.  **Hard Refresh:** Go to your live website and press **`Ctrl + F5`** (or `Cmd + Shift + R`).
 
-**This will work!** Since this new code has no reference to `main.jsx`, the browser will stop looking for it, and your site will finally load.
+Because the *new* file has no mention of `src/main.jsx`, it is mathematically impossible for the browser to look for it anymore. Your site will now show the content of this file instead of trying to run the React application!
