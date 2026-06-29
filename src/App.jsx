@@ -302,6 +302,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
+  const [servicesOpen, setServicesOpen] = useState(false);
 
   const servicesRef = useRef(null);
   const aboutRef = useRef(null);
@@ -351,46 +352,51 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] font-sans pb-24 md:pb-0">
-      <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-[#FDFBF5]/80 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-y-2 gap-x-3">
 
           <div
-            className="text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
+            className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             BONI
           </div>
 
-          <nav className="hidden md:flex items-center gap-1 bg-white border border-[#0A1D2F]/10 rounded-full px-3 py-2 shadow-md">
-            <div className="relative group">
-              <button className="px-5 py-2 text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition">
+          <nav className="order-3 w-full sm:order-none sm:w-auto flex items-center justify-center gap-0.5 sm:gap-1 bg-white border border-[#0A1D2F]/10 rounded-full px-2 sm:px-3 py-1.5 sm:py-2 shadow-md">
+            <div className="relative" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
+              <button
+                onClick={() => setServicesOpen(prev => !prev)}
+                className="px-3 sm:px-5 py-2 text-xs sm:text-sm font-medium rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap"
+              >
                 Services ▾
               </button>
-              <div className="absolute top-full left-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-[#0A1D2F]/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-3 group-hover:translate-y-0 transition-all duration-300 overflow-hidden">
-                {Object.keys(servicesData).map(service => (
-                  <button
-                    key={service}
-                    onClick={() => { setActiveCategory(service); setView("portfolio"); }}
-                    className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20 transition"
-                  >
-                    {service}
-                  </button>
-                ))}
-              </div>
+              {servicesOpen && (
+                <div className="absolute top-full left-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-[#0A1D2F]/10 overflow-hidden z-50">
+                  {Object.keys(servicesData).map(service => (
+                    <button
+                      key={service}
+                      onClick={() => { setActiveCategory(service); setView("portfolio"); setServicesOpen(false); }}
+                      className="block w-full text-left px-5 py-3 text-sm hover:bg-[#C8B87B]/20 transition"
+                    >
+                      {service}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <button onClick={() => scrollToSection(aboutRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition">
+            <button onClick={() => scrollToSection(aboutRef)} className="px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
               About
             </button>
 
-            <button onClick={() => scrollToSection(contactRef)} className="px-5 py-2 text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition">
+            <button onClick={() => scrollToSection(contactRef)} className="px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-full hover:bg-[#0A1D2F] hover:text-white transition whitespace-nowrap">
               Contact
             </button>
           </nav>
 
           <button
             onClick={() => openBooking()}
-            className="bg-[#0A1D2F] text-white px-7 py-3 rounded-full text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg"
+            className="bg-[#0A1D2F] text-white px-4 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition shadow-lg whitespace-nowrap"
           >
             Book Now
           </button>
