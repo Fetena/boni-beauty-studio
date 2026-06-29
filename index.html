@@ -1,60 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Boni Beauty Studio</title>
+    <title>boni-studio</title>
   </head>
   <body>
     <div id="root"></div>
-    <!-- STREAMING_CHUNK:Linking the main React entry point -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-```eof
-
-### 2. Update `src/main.jsx`
-Create or update your `src/main.jsx` file. This is the "bridge" that connects your React code to the `index.html` file.
-
-```javascript:src/main.jsx
-/* STREAMING_CHUNK:Importing React and DOM dependencies */
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
-import './index.css';
-
-/* STREAMING_CHUNK:Rendering the App component */
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
-```eof
-
-### 3. Update `src/index.css`
-Ensure your `src/index.css` is configured for Tailwind to style your components correctly.
-
-```css:src/index.css
-/* STREAMING_CHUNK:Applying Tailwind base directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* STREAMING_CHUNK:Defining base styles */
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-  background: #fdfbf5;
-  font-family: sans-serif;
-}
-```eof
-
-### What to do next:
-1. **Apply these changes:** Copy the content of these three blocks into your `index.html`, `src/main.jsx`, and `src/index.css` files on GitHub.
-2. **Commit:** Save these changes to your main branch.
-3. **Trigger Re-deploy:** Netlify will automatically detect the changes and rebuild your site as a React application.
-4. **Hard Refresh:** Once the build is complete, refresh your browser with **`Ctrl + F5`** (or `Cmd + Shift + R`) to clear any old cached versions of the site.
-
-Your booking modal and interactive features will be fully operational again once the build completes!
