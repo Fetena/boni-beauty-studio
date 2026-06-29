@@ -322,7 +322,7 @@ export default function App() {
       <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] pb-24 md:pb-0">
         <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
+            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI BEAUTY SALON</div>
             <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
           </div>
         </header>
@@ -361,7 +361,7 @@ export default function App() {
             className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            BONI
+            BONI BEAUTY SALON
           </div>
 
           {/* DESKTOP NAV */}
@@ -430,7 +430,7 @@ export default function App() {
           />
           <div className="absolute top-0 right-0 h-full w-72 max-w-[80%] bg-[#FDFBF5] shadow-2xl flex flex-col">
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#0A1D2F]/10">
-              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI</span>
+              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI BEAUTY SALON</span>
               <button
                 onClick={() => { setMobileMenuOpen(false); setMobileServicesOpen(false); }}
                 className="text-[#0A1D2F] hover:text-[#C8B87B] transition"
