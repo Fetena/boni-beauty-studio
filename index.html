@@ -11,8 +11,9 @@
     </style>
 </head>
 <body class="p-8">
+
     <div id="root" class="mx-auto w-full max-w-[1200px] bg-white rounded-3xl shadow-2xl overflow-hidden min-h-screen">
-        <header class="px-8 py-4 flex justify-between items-center bg-white border-b border-stone-100">
+        <header class="px-8 py-4 flex justify-between items-center bg-white border-b border-[#0A1D2F]/5">
             <h1 class="text-2xl font-bold uppercase tracking-widest text-[#0A1D2F]">BONI</h1>
             <button onclick="toggleModal(true)" class="bg-[#0A1D2F] text-white px-6 py-2 rounded-full text-sm hover:bg-[#C8B87B] transition">Book Now</button>
         </header>
@@ -39,15 +40,14 @@
         </main>
     </div>
 
-    <!-- Booking Modal -->
     <div id="bookingModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-[#0A1D2F]/80 backdrop-blur-md">
         <div class="bg-[#FDFBF5] w-full max-w-md p-6 rounded-3xl shadow-2xl relative">
             <button onclick="toggleModal(false)" class="absolute top-6 right-6 text-[#0A1D2F]/40 hover:text-[#0A1D2F]">✕</button>
             <h2 class="text-3xl font-serif text-[#0A1D2F] mb-6">Request Booking</h2>
-            <form class="space-y-4" onsubmit="event.preventDefault(); alert('Booking Requested!'); toggleModal(false);">
+            <form id="bookingForm" class="space-y-4">
                 <input type="text" placeholder="Full Name" required class="w-full p-3 rounded-xl border border-[#0A1D2F]/10 outline-none">
                 <input type="email" placeholder="Email" required class="w-full p-3 rounded-xl border border-[#0A1D2F]/10 outline-none">
-                <button class="w-full bg-[#0A1D2F] text-white py-4 rounded-xl font-bold hover:bg-[#C8B87B]">Confirm Request</button>
+                <button type="submit" class="w-full bg-[#0A1D2F] text-white py-4 rounded-xl font-bold hover:bg-[#C8B87B]">Confirm Request</button>
             </form>
         </div>
     </div>
@@ -56,6 +56,12 @@
         function toggleModal(show) {
             document.getElementById('bookingModal').classList.toggle('hidden', !show);
         }
+
+        document.getElementById('bookingForm').onsubmit = function(e) {
+            e.preventDefault();
+            alert('Booking request sent successfully!');
+            toggleModal(false);
+        };
     </script>
 </body>
 </html>
