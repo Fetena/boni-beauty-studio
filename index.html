@@ -1,46 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Boni Beauty Studio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #ECE9E2; }
-    </style>
-</head>
-<body class="p-8">
-    <div class="mx-auto w-full max-w-[1200px] bg-white rounded-3xl shadow-2xl overflow-hidden min-h-screen">
-        <header class="px-8 py-4 flex justify-between items-center bg-white border-b border-[#0A1D2F]/5">
-            <h1 class="text-2xl font-bold uppercase tracking-widest text-[#0A1D2F]">BONI</h1>
-        </header>
-
-        <section class="relative h-[550px] flex items-center px-12 bg-stone-100">
-            <div class="max-w-2xl">
-                <h1 class="text-4xl md:text-7xl font-serif leading-tight text-[#0A1D2F]">Timeless Beauty. Artfully Defined.</h1>
-            </div>
-        </section>
-
-        <main class="max-w-5xl mx-auto py-16 px-6">
-            <h2 class="text-3xl font-serif text-center mb-10">Our Services</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-stone-50 p-6 rounded-2xl h-72 flex flex-col justify-end">
-                    <h3 class="text-xl font-bold">Editorial & Bridal</h3>
-                    <p class="text-sm text-stone-600 mt-2">Professional styling for your most important moments.</p>
-                </div>
-                <div class="bg-stone-50 p-6 rounded-2xl h-72 flex flex-col justify-end">
-                    <h3 class="text-xl font-bold">Signature Styling</h3>
-                    <p class="text-sm text-stone-600 mt-2">Precision cutting and customized color treatments.</p>
-                </div>
-            </div>
-        </main>
-    </div>
-</body>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- STREAMING_CHUNK:Linking the main React entry point -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
 ```eof
 
-5.  Click **Commit changes**.
-6.  **Hard Refresh:** Go to your live website and press **`Ctrl + F5`** (or `Cmd + Shift + R`).
+### 2. Update `src/main.jsx`
+Create or update your `src/main.jsx` file. This is the "bridge" that connects your React code to the `index.html` file.
 
-Because the *new* file has no mention of `src/main.jsx`, it is mathematically impossible for the browser to look for it anymore. Your site will now show the content of this file instead of trying to run the React application!
+```javascript:src/main.jsx
+/* STREAMING_CHUNK:Importing React and DOM dependencies */
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
+
+/* STREAMING_CHUNK:Rendering the App component */
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
+```eof
+
+### 3. Update `src/index.css`
+Ensure your `src/index.css` is configured for Tailwind to style your components correctly.
+
+```css:src/index.css
+/* STREAMING_CHUNK:Applying Tailwind base directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* STREAMING_CHUNK:Defining base styles */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #fdfbf5;
+  font-family: sans-serif;
+}
+```eof
+
+### What to do next:
+1. **Apply these changes:** Copy the content of these three blocks into your `index.html`, `src/main.jsx`, and `src/index.css` files on GitHub.
+2. **Commit:** Save these changes to your main branch.
+3. **Trigger Re-deploy:** Netlify will automatically detect the changes and rebuild your site as a React application.
+4. **Hard Refresh:** Once the build is complete, refresh your browser with **`Ctrl + F5`** (or `Cmd + Shift + R`) to clear any old cached versions of the site.
+
+Your booking modal and interactive features will be fully operational again once the build completes!
