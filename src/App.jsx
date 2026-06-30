@@ -188,7 +188,7 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
     const customerNote = e.target.note.value;
 
     if (contactMethod === 'telegram') {
-      const msg = `Booking Request for Boni Beauty Studio\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
+      const msg = `Booking Request for Boni Beauty Salon\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
       window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
       onClose();
       return;
@@ -431,7 +431,7 @@ export default function App() {
       <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] pb-24 md:pb-0">
         <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
+            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI BEAUTY SALON</div>
             <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
           </div>
         </header>
@@ -474,7 +474,7 @@ export default function App() {
             className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            BONI
+            BONI BEAUTY SALON
           </div>
 
           {/* DESKTOP NAV */}
@@ -543,7 +543,7 @@ export default function App() {
           />
           <div className="absolute top-0 right-0 h-full w-72 max-w-[80%] bg-[#FDFBF5] shadow-2xl flex flex-col">
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#0A1D2F]/10">
-              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI</span>
+              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI BEAUTY SALON</span>
               <button
                 onClick={() => { setMobileMenuOpen(false); setMobileServicesOpen(false); }}
                 className="text-[#0A1D2F] hover:text-[#C8B87B] transition"
@@ -708,14 +708,14 @@ export default function App() {
           <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
             <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Our Story</span>
             <h2 className="text-3xl md:text-4xl font-serif">Dedicated to your radiance.</h2>
-            <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">Boni Beauty Studio merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
+            <p className="text-[#FDFBF5]/70 leading-relaxed text-sm md:text-lg">Boni Beauty Salon merges modern artistry with timeless elegance. Our team of expert stylists is committed to crafting personalized experiences that leave you feeling empowered and renewed. With years of experience and a passion for precision, we ensure every detail of your visit meets our standards of excellence.</p>
           </div>
         </div>
       </section>
 
       <footer ref={contactRef} className="py-16 md:py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10">
-        <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
-        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
+        <p className="font-serif text-2xl font-bold">BONI BEAUTY SALON</p>
+        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Salon. All rights reserved.</p>
         <div className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest space-y-2">
           <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
           <p>945792677</p>
