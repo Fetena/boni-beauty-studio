@@ -24,12 +24,18 @@ const servicesData = {
   }
 };
 
-// Rotating hero images — crossfades automatically, no user interaction required
+// Curated hero rotation — the 10 strongest, most "poster" style shots,
+// matched to the salon's own bridal / color / cutting / styling services.
 const heroImages = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400",
-  "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=2400",
-  "https://images.unsplash.com/photo-1595802521946-b60586e3f140?auto=format&fit=crop&q=80&w=2400",
-  "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=2400"
+  { src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400", caption: "Editorial styling, finished to perfection" },
+  { src: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&q=80&w=2400", caption: "Bridal looks built to last the whole day" },
+  { src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=2400", caption: "Precision color, custom to you" },
+  { src: "https://images.unsplash.com/photo-1595802521946-b60586e3f140?auto=format&fit=crop&q=80&w=2400", caption: "Classic elegance, modern technique" },
+  { src: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=2400", caption: "Soft, romantic, effortless" },
+  { src: "https://images.unsplash.com/photo-1562322140-8baeecece3df?auto=format&fit=crop&q=80&w=2400", caption: "Color theory, mastered" },
+  { src: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80&w=2400", caption: "Sharp lines, expert hands" },
+  { src: "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=2400", caption: "Bold, high-fashion finishes" },
+  { src: "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=2400", caption: "A studio dedicated to your radiance" }
 ];
 
 const Counter = ({ initialValue, label, icon: Icon, suffix = "" }) => {
@@ -43,38 +49,76 @@ const Counter = ({ initialValue, label, icon: Icon, suffix = "" }) => {
   );
 };
 
-// Crossfading hero background — cycles through heroImages on an interval
+// Poster-style hero slideshow — true Ken Burns zoom/pan per slide,
+// alternating direction for variety, with a caption overlay like a
+// rotating gallery of salon posters.
 const HeroSlideshow = () => {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setActive(prev => (prev + 1) % heroImages.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden">
-      {heroImages.map((src, idx) => (
+      <style>{`
+        @keyframes kenburns-in {
+          0% { transform: scale(1) translate(0, 0); }
+          100% { transform: scale(1.18) translate(-2%, -2%); }
+        }
+        @keyframes kenburns-out {
+          0% { transform: scale(1.18) translate(2%, 2%); }
+          100% { transform: scale(1) translate(0, 0); }
+        }
+        @keyframes hero-caption-in {
+          0% { opacity: 0; transform: translateY(10px); }
+          15% { opacity: 1; transform: translateY(0); }
+          85% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-6px); }
+        }
+      `}</style>
+      {heroImages.map((slide, idx) => (
         <div
-          key={src}
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-[1500ms] ease-in-out"
+          key={slide.src}
+          className="absolute inset-0 w-full h-full transition-opacity ease-in-out"
           style={{
-            backgroundImage: `url('${src}')`,
             opacity: idx === active ? 1 : 0,
-            transform: idx === active ? 'scale(1.06)' : 'scale(1)',
-            transitionProperty: 'opacity, transform',
-            transitionDuration: '1500ms, 6000ms'
+            transitionDuration: '1200ms',
+            zIndex: idx === active ? 1 : 0
           }}
-        />
+        >
+          <div
+            className="w-full h-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url('${slide.src}')`,
+              animation: idx === active ? `${idx % 2 === 0 ? 'kenburns-in' : 'kenburns-out'} 5500ms ease-out forwards` : 'none'
+            }}
+          />
+        </div>
       ))}
+
+      {/* Poster-style caption, bottom-left, cycles with the active slide */}
+      <div className="absolute bottom-20 md:bottom-24 left-6 md:left-24 z-10 max-w-sm">
+        <p
+          key={active}
+          className="text-white/90 text-xs md:text-sm font-bold uppercase tracking-widest border-l-2 border-[#C8B87B] pl-3"
+          style={{ animation: 'hero-caption-in 5000ms ease-in-out forwards' }}
+        >
+          {heroImages[active].caption}
+        </p>
+      </div>
+
       {/* Slide indicators */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
         {heroImages.map((_, idx) => (
-          <span
+          <button
             key={idx}
-            className={`h-1.5 rounded-full transition-all duration-500 ${idx === active ? 'w-6 bg-[#C8B87B]' : 'w-1.5 bg-white/50'}`}
+            onClick={() => setActive(idx)}
+            aria-label={`Show slide ${idx + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${idx === active ? 'w-6 bg-[#C8B87B]' : 'w-1.5 bg-white/50 hover:bg-white/80'}`}
           />
         ))}
       </div>
