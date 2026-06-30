@@ -692,10 +692,10 @@ export default function App() {
         </div>
         <div className="grid sm:grid-cols-2 gap-6">
           <button onClick={() => openBooking()} className="block w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-            <img src=promoPoster1Img alt="Beauty Hair Salon promotion" className="w-full h-auto object-cover" />
+            <img src={promoPoster1Img} alt="Beauty Hair Salon promotion" className="w-full h-auto object-cover" />
           </button>
           <button onClick={() => openBooking()} className="block w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all">
-            <img src=promoPoster2Img alt="Hair salon beauty promotion" className="w-full h-auto object-cover" />
+            <img src={promoPoster2Img} alt="Hair salon beauty promotion" className="w-full h-auto object-cover" />
           </button>
         </div>
       </section>
@@ -703,7 +703,7 @@ export default function App() {
       <section ref={aboutRef} className="py-16 md:py-24 bg-[#0A1D2F] text-[#FDFBF5]">
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-16">
           <div className="w-full md:w-1/2">
-            <img src=aboutStudioImg className="rounded-3xl shadow-2xl h-[300px] md:h-[500px] w-full object-cover" />
+            <img src={aboutStudioImg} className="rounded-3xl shadow-2xl h-[300px] md:h-[500px] w-full object-cover" />
           </div>
           <div className="w-full md:w-1/2 space-y-4 md:space-y-6">
             <span className="text-[#C8B87B] font-bold tracking-widest text-[10px] uppercase">Our Story</span>
