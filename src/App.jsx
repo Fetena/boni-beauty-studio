@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronRight, Users, Star, Award, ShieldCheck, X, Clock, Check, ChevronLeft } from 'lucide-react';
 
 const servicesData = {
@@ -24,6 +24,14 @@ const servicesData = {
   }
 };
 
+// Rotating hero images — crossfades automatically, no user interaction required
+const heroImages = [
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400",
+  "https://images.unsplash.com/photo-1560066984-138dadb4c0d5?auto=format&fit=crop&q=80&w=2400",
+  "https://images.unsplash.com/photo-1595802521946-b60586e3f140?auto=format&fit=crop&q=80&w=2400",
+  "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=2400"
+];
+
 const Counter = ({ initialValue, label, icon: Icon, suffix = "" }) => {
   const [count, setCount] = useState(initialValue);
   return (
@@ -32,6 +40,45 @@ const Counter = ({ initialValue, label, icon: Icon, suffix = "" }) => {
       <div className="text-2xl md:text-3xl font-bold text-[#0A1D2F] tracking-tight">{count}{suffix}</div>
       <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-[#0A1D2F]/50">{label}</div>
     </button>
+  );
+};
+
+// Crossfading hero background — cycles through heroImages on an interval
+const HeroSlideshow = () => {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActive(prev => (prev + 1) % heroImages.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
+      {heroImages.map((src, idx) => (
+        <div
+          key={src}
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-[1500ms] ease-in-out"
+          style={{
+            backgroundImage: `url('${src}')`,
+            opacity: idx === active ? 1 : 0,
+            transform: idx === active ? 'scale(1.06)' : 'scale(1)',
+            transitionProperty: 'opacity, transform',
+            transitionDuration: '1500ms, 6000ms'
+          }}
+        />
+      ))}
+      {/* Slide indicators */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        {heroImages.map((_, idx) => (
+          <span
+            key={idx}
+            className={`h-1.5 rounded-full transition-all duration-500 ${idx === active ? 'w-6 bg-[#C8B87B]' : 'w-1.5 bg-white/50'}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -79,7 +126,7 @@ const BookingModal = ({ isOpen, onClose, services, selectedService }) => {
     const customerNote = e.target.note.value;
 
     if (contactMethod === 'telegram') {
-      const msg = `Booking Request for Boni Beauty Salon\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
+      const msg = `Booking Request for Boni Beauty Studio\n\nName: ${customerName}\nDate: ${bookingDate}\nTime: ${bookingTime}\nServices: ${selected.join(', ')}\nNote: ${customerNote}`;
       window.open(`https://t.me/${telegramHandle}?text=${encodeURIComponent(msg)}`, '_blank');
       onClose();
       return;
@@ -322,7 +369,7 @@ export default function App() {
       <div className="min-h-screen bg-[#FDFBF5] text-[#0A1D2F] pb-24 md:pb-0">
         <header className="px-6 py-6 border-b border-[#0A1D2F]/10">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI BEAUTY SALON</div>
+            <div className="text-2xl font-bold tracking-tighter cursor-pointer font-serif" onClick={() => setView('home')}>BONI</div>
             <button onClick={() => setView('home')} className="text-sm font-medium hover:text-[#C8B87B] transition">← Back</button>
           </div>
         </header>
@@ -331,7 +378,11 @@ export default function App() {
           <p className="text-[#0A1D2F]/60 mb-12 max-w-xl">{data.desc}</p>
           <div className="grid md:grid-cols-3 gap-8">
             {data.items.map((item, idx) => (
-              <div key={idx} className="bg-white border border-[#0A1D2F]/10 shadow-sm rounded-2xl overflow-hidden flex flex-col">
+              <div
+                key={idx}
+                onClick={() => openBooking(item.name)}
+                className="bg-white border border-[#0A1D2F]/10 shadow-sm rounded-2xl overflow-hidden flex flex-col cursor-pointer active:scale-[0.98] hover:shadow-xl hover:border-[#C8B87B]/40 transition-all"
+              >
                 <img src={item.img} alt={item.name} className="w-full h-56 object-cover" />
                 <div className="p-5 flex flex-col flex-1">
                   <div className="flex items-start justify-between gap-2 mb-1">
@@ -340,7 +391,7 @@ export default function App() {
                   </div>
                   <div className="flex items-center gap-1 text-xs text-[#0A1D2F]/50 mb-3"><Clock size={12} /> {item.duration}</div>
                   <p className="text-sm text-[#0A1D2F]/60 mb-4 flex-1">{item.desc}</p>
-                  <button onClick={() => openBooking(item.name)} className="w-full py-3 border border-[#0A1D2F] hover:bg-[#0A1D2F] hover:text-white transition rounded-xl font-bold text-sm">Book Service</button>
+                  <button onClick={(e) => { e.stopPropagation(); openBooking(item.name); }} className="w-full py-3 border border-[#0A1D2F] hover:bg-[#0A1D2F] hover:text-white transition rounded-xl font-bold text-sm">Book Service</button>
                 </div>
               </div>
             ))}
@@ -361,7 +412,7 @@ export default function App() {
             className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#0A1D2F] cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            BONI BEAUTY SALON
+            BONI
           </div>
 
           {/* DESKTOP NAV */}
@@ -430,7 +481,7 @@ export default function App() {
           />
           <div className="absolute top-0 right-0 h-full w-72 max-w-[80%] bg-[#FDFBF5] shadow-2xl flex flex-col">
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#0A1D2F]/10">
-              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI BEAUTY SALON</span>
+              <span className="text-xl font-serif font-bold text-[#0A1D2F]">BONI</span>
               <button
                 onClick={() => { setMobileMenuOpen(false); setMobileServicesOpen(false); }}
                 className="text-[#0A1D2F] hover:text-[#C8B87B] transition"
@@ -497,10 +548,7 @@ export default function App() {
       )}
 
       <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center overflow-hidden">
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-all duration-1000"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2400')" }}
-        />
+        <HeroSlideshow />
         <div className="absolute inset-0 bg-[#0A1D2F]/40" />
         <div className="relative z-10 px-6 md:px-24 text-white max-w-4xl w-full">
           <div className="flex items-center gap-2 mb-6">
@@ -533,11 +581,15 @@ export default function App() {
           <h2 className="text-4xl font-serif mt-2">Our Services</h2>
         </div>
 
-        {/* PLATFORM-STYLE SERVICE CARD GRID */}
+        {/* PLATFORM-STYLE SERVICE CARD GRID — whole card is tappable/clickable */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.entries(servicesData).flatMap(([cat, data]) =>
             data.items.map(item => (
-              <div key={item.name} className="bg-white rounded-2xl border border-[#0A1D2F]/10 overflow-hidden shadow-sm hover:shadow-xl transition-shadow group">
+              <div
+                key={item.name}
+                onClick={() => openBooking(item.name)}
+                className="bg-white rounded-2xl border border-[#0A1D2F]/10 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#C8B87B]/40 hover:-translate-y-1 active:scale-[0.98] transition-all cursor-pointer group"
+              >
                 <div className="h-44 overflow-hidden relative">
                   <img src={item.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <span className="absolute top-3 left-3 bg-[#0A1D2F]/80 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">{cat}</span>
@@ -550,7 +602,10 @@ export default function App() {
                   <p className="text-sm text-[#0A1D2F]/60 mb-4">{item.desc}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-bold text-[#0A1D2F]">from <span className="text-[#C8B87B]">{item.priceFrom}</span></span>
-                    <button onClick={() => openBooking(item.name)} className="text-xs font-bold uppercase tracking-widest bg-[#0A1D2F] text-white px-4 py-2.5 rounded-full hover:bg-[#C8B87B] hover:text-[#0A1D2F] transition">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openBooking(item.name); }}
+                      className="text-xs font-bold uppercase tracking-widest bg-[#0A1D2F] text-white px-4 py-2.5 rounded-full group-hover:bg-[#C8B87B] group-hover:text-[#0A1D2F] transition"
+                    >
                       Book
                     </button>
                   </div>
@@ -581,8 +636,8 @@ export default function App() {
       </section>
 
       <footer ref={contactRef} className="py-16 md:py-24 bg-[#FDFBF5] text-[#0A1D2F] text-center border-t border-[#0A1D2F]/10">
-        <p className="font-serif text-2xl font-bold">BONI BEAUTY SALON</p>
-        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Salon. All rights reserved.</p>
+        <p className="font-serif text-2xl font-bold">BONI BEAUTY STUDIO</p>
+        <p className="text-xs md:text-sm mt-4 opacity-60">&copy; 2026 Boni Beauty Studio. All rights reserved.</p>
         <div className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest space-y-2">
           <p>Mon-Sat: 8AM - 7PM | Sun: 1PM - 7PM</p>
           <p>945792677</p>
